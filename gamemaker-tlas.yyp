@@ -1,6 +1,8 @@
 {
   "resources": [
+    {"id":{"name":"test","path":"objects/test/test.yy",},"order":12,},
     {"id":{"name":"Tag_Decorated_String","path":"scripts/Tag_Decorated_String/Tag_Decorated_String.yy",},"order":0,},
+    {"id":{"name":"TDS_Parser","path":"scripts/TDS_Parser/TDS_Parser.yy",},"order":1,},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},"order":0,},
   ],
   "Options": [
