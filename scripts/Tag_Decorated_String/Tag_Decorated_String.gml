@@ -36,7 +36,6 @@ function tds_draw(tag_decorated_string, x, y) {
 	for (var i = 0; i < array_length(arr); i++) {
 		var _char = arr[@ i].character
 		draw_text(x, y, _char)
-		draw_text_ext_transformed_color()
 		x += string_width(_char)
 	}
 }
