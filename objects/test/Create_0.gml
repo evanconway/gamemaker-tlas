@@ -3,4 +3,4 @@
 
 thing = new Tag_Decorated_String("I'm having a great day!")
 
-otherthing = tds_string_split("Though I would see you around the bourough.", "ou")
+parserTest = tds_parser("rgb:123,0,60 shake      wobble:1,2  float")
