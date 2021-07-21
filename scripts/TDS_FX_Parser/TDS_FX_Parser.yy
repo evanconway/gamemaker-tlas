@@ -6,7 +6,7 @@
     "path": "folders/Tag Decorated String.yy",
   },
   "resourceVersion": "1.0",
-  "name": "TDS_Parser",
+  "name": "TDS_FX_Parser",
   "tags": [],
   "resourceType": "GMScript",
 }

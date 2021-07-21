@@ -30,7 +30,6 @@ enum TDS_FX {
 
 // return map of fx structs with settings based on fx_string argument
 function tds_parser(fx_string) {
-	var result = tds_fx_map_create()
 	
 	// parse out commands and arguments from fx_string
 	fx_string = string_lower(fx_string)
@@ -38,7 +37,7 @@ function tds_parser(fx_string) {
 	for (var i = 0; i < array_length(split_spaces); i++) {
 		
 		var command_args = tds_string_split(split_spaces[@ i], ":")
-		var command = tds_command_string_to_enum(command_args[@ 0])
+		var command = command_args[@ 0]
 		var args = []
 		
 		if (array_length(command_args) == 2) {
@@ -52,7 +51,7 @@ function tds_parser(fx_string) {
 		// apply command and args to effects
 		
 		// handle commands with string arguments first
-		if (command == TDS_FX.FONT) {
+		if (command == "font") {
 			result[? command].mod_font = args[0]
 		}
 		
@@ -61,44 +60,44 @@ function tds_parser(fx_string) {
 			args[@ i] = real(string_digits(args[@ i]))
 		}
 		
-		if (command == TDS_FX.XY) {
-			result[? command].mod_x = args[0]
-			result[? command].mod_y = args[1]
+		if (command == "xy") {
+			result[? TDS_FX.XY].mod_x = args[0]
+			result[? TDS_FX.XY].mod_y = args[1]
 		}
 		
-		if (command == TDS_FX.WAVE) {
-		
-		}
-		
-		if (command == TDS_FX.FLOAT) {
+		if (command == "wave") {
 		
 		}
 		
-		if (command == TDS_FX.SHAKE) {
+		if (command == "float") {
 		
 		}
 		
-		if (command == TDS_FX.WSHAKE) {
+		if (command == "shake") {
 		
 		}
 		
-		if (command == TDS_FX.ALPHA) {
+		if (command == "wshake") {
 		
 		}
 		
-		if (command == TDS_FX.PULSE) {
+		if (command == "alpha") {
 		
 		}
 		
-		if (command == TDS_FX.BLINK) {
+		if (command == "pulse") {
 		
 		}
 		
-		if (command == TDS_FX.COLOR) {
+		if (command == "blink") {
 		
 		}
 		
-		if (command == TDS_FX.CHROMATIC) {
+		if (command == "color") {
+		
+		}
+		
+		if (command == "chromatic") {
 		
 		}
 	}
@@ -252,65 +251,6 @@ function tds_fx_map_create() {
 	})
 
 	return result
-}
-
-// return fx enum of given string
-function tds_command_string_to_enum(s) {
-	if (s == "xy") {
-		return TDS_FX.XY
-	}
-	
-	if (s == "wave") {
-		return TDS_FX.WAVE
-	}
-	
-	if (s == "float") {
-		return TDS_FX.FLOAT
-	}
-	
-	if (s == "shake") {
-		return TDS_FX.SHAKE
-	}
-	
-	if (s == "wshake") {
-		return TDS_FX.WSHAKE
-	}
-	
-	if (s == "alpha") {
-		return TDS_FX.ALPHA
-	}
-	
-	if (s == "pulse") {
-		return TDS_FX.PULSE
-	}
-	
-	if (s == "blink") {
-		return TDS_FX.BLINK
-	}
-	
-	if (s == "color") {
-		return TDS_FX.COLOR
-	}
-	
-	if (s == "chromatic") {
-		return TDS_FX.CHROMATIC
-	}
-	
-	if (s == "font") {
-		return TDS_FX.FONT
-	}
-	
-	if (s == "rotation") {
-		return TDS_FX.ROTATION
-	}
-	
-	if (s == "wobble") {
-		return TDS_FX.WOBBLE
-	}
-	
-	if (s == "wwobble") {
-		return TDS_FX.WWOBBLE
-	}
 }
 
 function tds_string_split(s, delimiter) {
