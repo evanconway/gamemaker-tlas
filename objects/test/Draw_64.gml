@@ -1,2 +1,2 @@
 
-tds_draw(thing, 100, 100)
+tds_draw(thing, 0, 100)
