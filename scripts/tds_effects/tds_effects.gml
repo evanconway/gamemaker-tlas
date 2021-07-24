@@ -65,3 +65,10 @@ function __tds_fx_wshake(args) {
 		}
 	}
 }
+
+function __tds_fx_chromatic(args) {
+	return {
+		char_refs:	[],
+		rgb_change:	10
+	}
+}

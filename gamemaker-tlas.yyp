@@ -1,12 +1,12 @@
 {
   "resources": [
     {"id":{"name":"tds_font_default","path":"fonts/tds_font_default/tds_font_default.yy",},"order":2,},
-    {"id":{"name":"test","path":"objects/test/test.yy",},"order":12,},
+    {"id":{"name":"test","path":"objects/test/test.yy",},"order":2,},
     {"id":{"name":"tds_draw","path":"scripts/tds_draw/tds_draw.yy",},"order":3,},
     {"id":{"name":"tds_Character","path":"scripts/tds_Character/tds_Character.yy",},"order":4,},
     {"id":{"name":"Tag_Decorated_String","path":"scripts/Tag_Decorated_String/Tag_Decorated_String.yy",},"order":0,},
     {"id":{"name":"tds_effects","path":"scripts/tds_effects/tds_effects.yy",},"order":1,},
-    {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},"order":0,},
+    {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},"order":3,},
   ],
   "Options": [
     {"name":"HTML5","path":"options/html5/options_html5.yy",},
@@ -26,8 +26,7 @@
     {"roomId":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
   ],
   "Folders": [
-    {"folderPath":"folders/Rooms.yy","order":10,"resourceVersion":"1.0","name":"Rooms","tags":[],"resourceType":"GMFolder",},
-    {"folderPath":"folders/Tag Decorated String.yy","order":11,"resourceVersion":"1.0","name":"Tag Decorated String","tags":[],"resourceType":"GMFolder",},
+    {"folderPath":"folders/Tag Decorated String.yy","order":1,"resourceVersion":"1.0","name":"Tag Decorated String","tags":[],"resourceType":"GMFolder",},
   ],
   "AudioGroups": [
     {"targets":-1,"resourceVersion":"1.3","name":"audiogroup_default","resourceType":"GMAudioGroup",},
