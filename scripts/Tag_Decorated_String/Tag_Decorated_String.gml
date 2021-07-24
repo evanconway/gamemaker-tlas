@@ -25,7 +25,7 @@ function __tds_handle_commands_at_i(source_string, index, fx_arr_main, fx_arr_te
 }
 
 function __tds_handle_new_character(char, fx_array, char_array) {
-	var new_character = new __tds_character(char)
+	var new_character = new __tds_Character(char)
 	for (var i = 0; i < array_length(fx_array); i++) {
 		array_push(fx_array[@ i].char_refs, new_character)
 	}
@@ -50,49 +50,6 @@ function __tds_fx_arr_append_and_clear(fx_arr_append_to, fx_arr_to_clear) {
 		array_push(fx_arr_append_to, fx_arr_to_clear[@ i])
 	}
 	array_resize(fx_arr_to_clear, 0)
-}
-
-function __tds_character(char) constructor {
-	character =	char
-	X = 0
-	Y = 0
-	alpha = 1
-	c_color = c_white
-	angle = 0
-	scaleX = 1
-	scaleY = 1
-	font = tds_font_default
-}
-
-function tds_draw(tds, X, Y) {
-	for (var i = 0; i < array_length(tds.characters); i++) {
-		__tds_init_character(tds.characters[@ i])
-	}
-	for (var i = 0; i < array_length(tds.fx); i++) {
-		tds.fx[@ i].update()
-	}
-	for (var i = 0; i < array_length(tds.characters); i++) {
-		var c = tds.characters[@ i]
-		var c_x = c.X + X
-		var c_y = c.Y + Y
-		var c_char = c.character
-		draw_set_alpha(c.alpha)
-		draw_set_color(c.c_color)
-		draw_set_font(c.font)
-		draw_text_transformed(c_x, c_y, c_char, c.scaleX, c.scaleY, c.angle)
-		X += string_width(c_char) * c.scaleX
-	}
-}
-
-function __tds_init_character(char) {
-	char.X = 0
-	char.Y = 0
-	char.c_color = c_white
-	char.angle = 0
-	char.scaleX = 1
-	char.scaleY = 1
-	char.alpha = 1
-	char.font = tds_font_default
 }
 
 function __tds_get_fx_array(command_string) {
