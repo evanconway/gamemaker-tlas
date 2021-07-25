@@ -1,5 +1,6 @@
 function __tds_Character(char) constructor {
 	character =	char
+	sprite = undefined
 	X = 0
 	Y = 0
 	alpha = 1

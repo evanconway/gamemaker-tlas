@@ -20,7 +20,11 @@ function __tds_draw_characters(tds, X, Y) {
 	for (var i = 0; i < array_length(tds.characters); i++) {
 		var c = tds.characters[@ i]
 		__tds_draw_char(c, X, Y)
-		X += (string_width(c.character) * c.scale_x)
+		if (c.sprite == undefined) {
+			X += string_width(c.character) * c.scale_x
+		} else {
+			X += sprite_get_width(c.sprite) * c.scale_x
+		}
 	}
 }
 
@@ -34,5 +38,9 @@ function __tds_draw_char(char, X, Y) {
 	draw_set_alpha(char.alpha)
 	draw_set_color(char.c_color)
 	draw_set_font(char.font)
-	draw_text_transformed(c_x, c_y, c_char, c_scale_x, c_scale_y, c_angle)
+	if (char.sprite == undefined) {
+		draw_text_transformed(c_x, c_y, c_char, c_scale_x, c_scale_y, c_angle)
+	} else {
+		draw_sprite_ext(char.sprite, 0, c_x, c_y, c_scale_x, c_scale_y, c_angle, char.c_color, char.alpha)
+	}
 }

@@ -279,5 +279,9 @@ function __tds_get_fx(command, aargs) {
 	if (command == "fade") {
 		return __tds_fx_fade(aargs)
 	}
+	if (command == "sprite") {
+		// sprite not handled here, included to avoid error
+		return undefined
+	}
 	show_error("tds error: effect \"" + command + "\" not recognized", true)
 }

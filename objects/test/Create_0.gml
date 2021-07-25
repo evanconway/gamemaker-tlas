@@ -33,5 +33,5 @@ test_alpha = new Tag_Decorated_String(
 )
 
 test_font = new Tag_Decorated_String(
-	"old font <font:f_handwriting offset:0,-2>new font<> old font"
+	"old font <font:f_handwriting offset:0,-2>new font<> old font, and press the <fade float offset:0,-4><sprite:s_button><> to activate!"
 )
