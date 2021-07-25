@@ -6,7 +6,7 @@
     "path": "folders/Tag Decorated String.yy",
   },
   "resourceVersion": "1.0",
-  "name": "tds_color_to_rgb",
+  "name": "__tds_color_to_rgb",
   "tags": [],
   "resourceType": "GMScript",
 }

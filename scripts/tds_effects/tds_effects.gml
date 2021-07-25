@@ -69,6 +69,8 @@ function __tds_fx_wshake(aargs) {
 }
 
 function __tds_fx_fade(aargs) {
+	var arg_alpha_min = 0
+	var arg_alpha_max = 1
 	var arg_alpha_change = 0.02
 	var arg_frame_time_max = 1
 	if (array_length(aargs) == 2) {
@@ -80,6 +82,8 @@ function __tds_fx_fade(aargs) {
 	return {
 		char_refs:		[],
 		affects_color:	false,
+		alpha_min:		arg_alpha_min,
+		alpha_max:		arg_alpha_max,
 		alpha_change:	arg_alpha_change,
 		frame_time_max:	arg_frame_time_max,
 		time:			0,
@@ -89,11 +93,11 @@ function __tds_fx_fade(aargs) {
 			if (time <= 0) {
 				time = frame_time_max
 				mod_alpha -= alpha_change
-				if (mod_alpha < 0) {
-					mod_alpha = 0
+				if (mod_alpha < alpha_min) {
+					mod_alpha = alpha_min
 					alpha_change *= -1
-				} else if (mod_alpha > 1) {
-					mod_alpha = 1
+				} else if (mod_alpha > alpha_max) {
+					mod_alpha = alpha_max
 					alpha_change *= -1
 				}
 			}
