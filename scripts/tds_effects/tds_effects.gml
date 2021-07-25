@@ -133,11 +133,24 @@ function __tds_fx_float(aargs) {
 	}
 }
 
+global.tds_fx_defaults_fade = []
+global.tds_fx_defaults_fade[0] = 0.3
+global.tds_fx_defaults_fade[1] = 1
+global.tds_fx_defaults_fade[2] = 0.015
+global.tds_fx_defaults_fade[3] = 1
+
+function tds_fx_set_defaults_fade(alpha_min, alpha_max, percent_change, frame_time) {
+	global.tds_fx_defaults_fade[0] = alpha_min
+	global.tds_fx_defaults_fade[1] = alpha_max
+	global.tds_fx_defaults_fade[2] = percent_change
+	global.tds_fx_defaults_fade[3] = frame_time
+}
+
 function __tds_fx_fade(aargs) {
-	var arg_alpha_min = 0.3
-	var arg_alpha_max = 1
-	var arg_alpha_change_percent = 0.015
-	var arg_frame_time_max = 1
+	var arg_alpha_min = global.tds_fx_defaults_fade[0]
+	var arg_alpha_max = global.tds_fx_defaults_fade[1]
+	var arg_alpha_change_percent = global.tds_fx_defaults_fade[2]
+	var arg_frame_time_max = global.tds_fx_defaults_fade[3]
 	if (array_length(aargs) == 2) {
 		arg_alpha_min = aargs[0]
 		arg_alpha_max = aargs[1]
