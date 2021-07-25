@@ -253,6 +253,28 @@ function __tds_fx_rgb(aargs) {
 	}
 }
 
+function __tds_fx_scale(aargs) {
+	var arg_mod_scale_x = 1
+	var arg_mod_scale_y = 1
+	if (array_length(aargs) == 2) {
+		arg_mod_scale_x = aargs[@ 0]
+		arg_mod_scale_y = aargs[@ 1]
+	} else {
+		__tds_error_fx_args("scale")
+	}
+	return {
+		char_refs:		[],
+		mod_scale_x:	arg_mod_scale_x,
+		mod_scale_y:	arg_mod_scale_y,
+		update:			function() {
+			for (var i = 0; i < array_length(char_refs); i++) {
+				char_refs[@ i].scale_x *= mod_scale_x
+				char_refs[@ i].scale_y *= mod_scale_y
+			}
+		}
+	}
+}
+
 function __tds_get_fx(command, aargs) {
 	command = __tds_color_to_rgb(command, aargs)
 	if (command == "rgb") {
@@ -279,9 +301,11 @@ function __tds_get_fx(command, aargs) {
 	if (command == "fade") {
 		return __tds_fx_fade(aargs)
 	}
+	if (command == "scale") {
+		return __tds_fx_scale(aargs)
+	}
 	if (command == "sprite") {
-		// sprite not handled here, included to avoid error
-		return undefined
+		return undefined // sprite not handled here, included to avoid error
 	}
 	show_error("tds error: effect \"" + command + "\" not recognized", true)
 }

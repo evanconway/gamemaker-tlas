@@ -11,7 +11,6 @@
     {"id":{"name":"tds_Character","path":"scripts/tds_Character/tds_Character.yy",},"order":4,},
     {"id":{"name":"Tag_Decorated_String","path":"scripts/Tag_Decorated_String/Tag_Decorated_String.yy",},"order":0,},
     {"id":{"name":"tds_effects","path":"scripts/tds_effects/tds_effects.yy",},"order":1,},
-    {"id":{"name":"Font3","path":"fonts/Font3/Font3.yy",},"order":7,},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},"order":3,},
   ],
   "Options": [

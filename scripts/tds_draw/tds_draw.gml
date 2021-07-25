@@ -11,12 +11,13 @@ function __tds_update_fx(tds) {
 
 function __tds_draw_characters(tds, X, Y) {
 	for (var i = 0; i < array_length(tds.characters); i++) {
-		__tds_draw_char( tds.characters[@ i], X, Y)
+		__tds_draw_char( tds.characters[@ i], X, Y)	
 		if ( tds.characters[@ i].sprite == undefined) {
-			X += string_width( tds.characters[@ i].character) *  tds.characters[@ i].scale_x
+			X += string_width(tds.characters[@ i].character) * tds.characters[@ i].scale_x
 		} else {
-			X += sprite_get_width( tds.characters[@ i].sprite) *  tds.characters[@ i].scale_x
+			X += sprite_get_width(tds.characters[@ i].sprite) * tds.characters[@ i].scale_x
 		}
+		__tds_character_init(tds.characters[@ i])
 	}
 }
 
@@ -46,5 +47,4 @@ function __tds_draw_char(char, X, Y) {
 			char.alpha
 		)
 	}
-	__tds_character_init(char)
 }
