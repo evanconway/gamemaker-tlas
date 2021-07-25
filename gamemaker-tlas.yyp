@@ -6,10 +6,12 @@
     {"id":{"name":"o_test_draw_sprite","path":"objects/o_test_draw_sprite/o_test_draw_sprite.yy",},"order":6,},
     {"id":{"name":"f_handwriting","path":"fonts/f_handwriting/f_handwriting.yy",},"order":4,},
     {"id":{"name":"test","path":"objects/test/test.yy",},"order":2,},
+    {"id":{"name":"o_stress_test","path":"objects/o_stress_test/o_stress_test.yy",},"order":8,},
     {"id":{"name":"tds_draw","path":"scripts/tds_draw/tds_draw.yy",},"order":3,},
     {"id":{"name":"tds_Character","path":"scripts/tds_Character/tds_Character.yy",},"order":4,},
     {"id":{"name":"Tag_Decorated_String","path":"scripts/Tag_Decorated_String/Tag_Decorated_String.yy",},"order":0,},
     {"id":{"name":"tds_effects","path":"scripts/tds_effects/tds_effects.yy",},"order":1,},
+    {"id":{"name":"Font3","path":"fonts/Font3/Font3.yy",},"order":7,},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},"order":3,},
   ],
   "Options": [

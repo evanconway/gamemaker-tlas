@@ -1,13 +1,6 @@
 function tds_draw(tds, X, Y) {
-	__tds_init_characters(tds)
 	__tds_update_fx(tds)
 	__tds_draw_characters(tds, X, Y)
-}
-
-function __tds_init_characters(tds) {
-	for (var i = 0; i < array_length(tds.characters); i++) {
-		__tds_character_init(tds.characters[@ i])
-	}
 }
 
 function __tds_update_fx(tds) {
@@ -18,29 +11,40 @@ function __tds_update_fx(tds) {
 
 function __tds_draw_characters(tds, X, Y) {
 	for (var i = 0; i < array_length(tds.characters); i++) {
-		var c = tds.characters[@ i]
-		__tds_draw_char(c, X, Y)
-		if (c.sprite == undefined) {
-			X += string_width(c.character) * c.scale_x
+		__tds_draw_char( tds.characters[@ i], X, Y)
+		if ( tds.characters[@ i].sprite == undefined) {
+			X += string_width( tds.characters[@ i].character) *  tds.characters[@ i].scale_x
 		} else {
-			X += sprite_get_width(c.sprite) * c.scale_x
+			X += sprite_get_width( tds.characters[@ i].sprite) *  tds.characters[@ i].scale_x
 		}
 	}
 }
 
 function __tds_draw_char(char, X, Y) {
-	var c_x = char.X + X
-	var c_y = char.Y + Y
-	var c_scale_x = char.scale_x
-	var c_scale_y = char.scale_y
-	var c_char = char.character
-	var c_angle = char.angle
 	draw_set_alpha(char.alpha)
 	draw_set_color(char.c_color)
 	draw_set_font(char.font)
 	if (char.sprite == undefined) {
-		draw_text_transformed(c_x, c_y, c_char, c_scale_x, c_scale_y, c_angle)
+		draw_text_transformed(
+			char.X + X,
+			char.Y + Y,
+			char.character,
+			char.scale_x,
+			char.scale_y,
+			char.angle
+		)
 	} else {
-		draw_sprite_ext(char.sprite, 0, c_x, c_y, c_scale_x, c_scale_y, c_angle, char.c_color, char.alpha)
+		draw_sprite_ext(
+			char.sprite, 
+			0, 
+			char.X + X, 
+			char.Y + Y, 
+			char.scale_x, 
+			char.scale_y, 
+			char.angle, 
+			char.c_color, 
+			char.alpha
+		)
 	}
+	__tds_character_init(char)
 }
