@@ -74,6 +74,8 @@ function __tds_aargs_strings_to_numbers(aargs) {
 		try {
 			var number = real(aargs[@ i])
 			aargs[@ i] = number
+		} catch (e) {
+			// do nothing
 		}
 	}
 }

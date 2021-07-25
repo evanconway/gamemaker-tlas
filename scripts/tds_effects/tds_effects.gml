@@ -2,6 +2,38 @@ function __tds_error_fx_args(effect) {
 	show_error("tds error: incorrect number of arguments for effect \"" + effect + "\"", true)
 }
 
+function __tds_fx_font(aargs) {
+	if (array_length(aargs) != 1) {
+		__tds_error_fx_args("font")
+	}
+	return {
+		char_refs:	[],
+		font:		asset_get_index(aargs[@ 0]),
+		update:		function() {
+			for (var i = 0; i < array_length(char_refs); i++) {
+				char_refs[@ i].font = font
+			}
+		}
+	}
+}
+
+function __tds_fx_offset(aargs) {
+	if (array_length(aargs) != 2) {
+		__tds_error_fx_args("offset")
+	}
+	return {
+		char_refs:	[],
+		mod_x:		aargs[@ 0],
+		mod_y:		aargs[@ 1],
+		update:		function() {
+			for (var i = 0; i < array_length(char_refs); i++) {
+				char_refs[@ i].X += mod_x
+				char_refs[@ i].Y += mod_y
+			}
+		}
+	}
+}
+
 function __tds_fx_shake(aargs) {
 	var arg_frame_time_max = 5
 	var arg_pixel_offset = 1
@@ -65,6 +97,37 @@ function __tds_fx_wshake(aargs) {
 			for (var i = 0; i < array_length(char_refs); i++) {
 				char_refs[@ i].X += mod_x
 				char_refs[@ i].Y += mod_y
+			}
+		}
+	}
+}
+
+function __tds_fx_float(aargs) {
+	var arg_frame_time_max = 1,
+	var arg_pixel_offset = 2,
+	var arg_change_percent = 0.07
+	if (array_length(aargs) == 3) {
+		arg_frame_time_max = aargs[@ 0]
+		arg_pixel_offset = aargs[@ 1]
+		arg_change_percent = aargs[@ 2]
+	} else if (array_length(aargs) != 0) {
+		__tds_error_fx_args("float")
+	}
+	return {
+		char_refs:		[],
+		frame_time_max:	arg_frame_time_max,
+		time:			0,
+		pixel_offset:	arg_pixel_offset,
+		change_percent:	arg_change_percent,
+		count:			0,
+		update:			function() {
+			time--
+			if (time <= 0) {
+				time = frame_time_max
+				count += change_percent
+			}
+			for (var i = 0; i < array_length(char_refs); i++) {
+				char_refs[@ i].Y += sin(count) * pixel_offset
 			}
 		}
 	}
@@ -195,14 +258,23 @@ function __tds_get_fx(command, aargs) {
 	if (command == "rgb") {
 		return __tds_fx_rgb(aargs)
 	}
+	if (command == "chromatic") {
+		return __tds_fx_chromatic(aargs)
+	}
+	if (command == "font") {
+		return __tds_fx_font(aargs)
+	}
+	if (command == "offset") {
+		return __tds_fx_offset(aargs)
+	}
 	if (command == "shake") {
 		return __tds_fx_shake(aargs)
 	}
 	if (command == "wshake") {
 		return __tds_fx_wshake(aargs)
 	}
-	if (command == "chromatic") {
-		return __tds_fx_chromatic(aargs)
+	if (command == "float") {
+		return __tds_fx_float(aargs)
 	}
 	if (command == "fade") {
 		return __tds_fx_fade(aargs)

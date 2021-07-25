@@ -199,11 +199,11 @@
   "canGenerateBitmap": true,
   "maintainGms1Font": false,
   "parent": {
-    "name": "Tag Decorated String",
-    "path": "folders/Tag Decorated String.yy",
+    "name": "gamemaker-tlas",
+    "path": "gamemaker-tlas.yyp",
   },
   "resourceVersion": "1.0",
-  "name": "tds_font_default",
+  "name": "f_handwriting",
   "tags": [],
   "resourceType": "GMFont",
 }
