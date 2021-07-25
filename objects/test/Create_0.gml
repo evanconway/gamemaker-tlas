@@ -20,7 +20,8 @@ for (var i = 0; i < 1; i ++) {
 		"<maroon>maroon " +
 		"<navy>navy " +
 		"<olive>olive " +
-		"<silver>silver "
+		"<silver>silver " +
+		"<fade>fade effect "
 	)
 }
 tds_test = new Tag_Decorated_String(massive_str)

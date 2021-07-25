@@ -1,8 +1,3 @@
-/*
-	All effects must contain a char_refs array and an update function. The update function should
-	act on all elements in the char_refs array. Everything else dependson the effect. 
-*/
-
 function __tds_fx_shake(aargs) {
 	var arg_frame_time_max = 5
 	var arg_pixel_offset = 1
@@ -14,6 +9,7 @@ function __tds_fx_shake(aargs) {
 	}
 	return {
 		char_refs:		[],
+		affects_color:	false,
 		frame_time_max:	arg_frame_time_max,
 		time:			0,
 		pixel_offset:	arg_pixel_offset,
@@ -49,6 +45,7 @@ function __tds_fx_wshake(aargs) {
 	}
 	return {
 		char_refs:		[],
+		affects_color:	false,
 		frame_time_max:	arg_frame_time_max,
 		time:			0,
 		pixel_offset:	arg_pixel_offset,
@@ -71,11 +68,48 @@ function __tds_fx_wshake(aargs) {
 	}
 }
 
+function __tds_fx_fade(aargs) {
+	var arg_alpha_change = 0.02
+	var arg_frame_time_max = 1
+	if (array_length(aargs) == 2) {
+		arg_alpha_change = aargs[0]
+		arg_frame_time_max = aargs[1]
+	} else if (array_length(aargs) != 0) {
+		show_error("tds error: incorrect number of arguments for effect \"fade\"", true)
+	}
+	return {
+		char_refs:		[],
+		affects_color:	false,
+		alpha_change:	arg_alpha_change,
+		frame_time_max:	arg_frame_time_max,
+		time:			0,
+		mod_alpha:		1,	
+		update:			function() {
+			time--
+			if (time <= 0) {
+				time = frame_time_max
+				mod_alpha -= alpha_change
+				if (mod_alpha < 0) {
+					mod_alpha = 0
+					alpha_change *= -1
+				} else if (mod_alpha > 1) {
+					mod_alpha = 1
+					alpha_change *= -1
+				}
+			}
+			for (var i = 0; i < array_length(char_refs); i++) {
+				char_refs[@ i].alpha *= mod_alpha
+			}
+		}
+	}
+}
+
 function __tds_fx_chromatic(aargs) {
 	var max_rgb = 255
 	var min_rgb = 0
 	return {
 		char_refs:	[],
+		affects_color:	true,
 		rgb_change:	10,
 		rgb_max:	max_rgb,
 		rgb_min:	min_rgb,
@@ -134,6 +168,7 @@ function __tds_fx_rgb(aargs) {
 	}
 	return {
 		char_refs:	[],
+		affects_color:	true,
 		red:		aargs[0],
 		green:		aargs[1],
 		blue:		aargs[2],
@@ -158,6 +193,9 @@ function __tds_get_fx(command, aargs) {
 	}
 	if (command == "chromatic") {
 		return __tds_fx_chromatic(aargs)
+	}
+	if (command == "fade") {
+		return __tds_fx_fade(aargs)
 	}
 	show_error("tds error: effect \"" + command + "\" not recognized", true)
 }
