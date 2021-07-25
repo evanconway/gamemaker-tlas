@@ -1,3 +1,7 @@
+function __tds_error_fx_args(effect) {
+	show_error("tds error: incorrect number of arguments for effect \"" + effect + "\"", true)
+}
+
 function __tds_fx_shake(aargs) {
 	var arg_frame_time_max = 5
 	var arg_pixel_offset = 1
@@ -5,11 +9,10 @@ function __tds_fx_shake(aargs) {
 		arg_frame_time_max = aargs[@ 0]
 		arg_pixel_offset = aargs[@ 1]
 	} else if (array_length(aargs) != 0) {
-		show_error("tds error: incorrect number of arguments for effect \"shake\"", true)
+		__tds_error_fx_args("shake")
 	}
 	return {
 		char_refs:		[],
-		affects_color:	false,
 		frame_time_max:	arg_frame_time_max,
 		time:			0,
 		pixel_offset:	arg_pixel_offset,
@@ -41,11 +44,10 @@ function __tds_fx_wshake(aargs) {
 		arg_frame_time_max = aargs[@ 0]
 		arg_pixel_offset = aargs[@ 1]
 	} else if (array_length(aargs) != 0) {
-		show_error("tds error: incorrect number of arguments for effect \"wshake\"", true)
+		__tds_error_fx_args("wshake")
 	}
 	return {
 		char_refs:		[],
-		affects_color:	false,
 		frame_time_max:	arg_frame_time_max,
 		time:			0,
 		pixel_offset:	arg_pixel_offset,
@@ -69,36 +71,42 @@ function __tds_fx_wshake(aargs) {
 }
 
 function __tds_fx_fade(aargs) {
-	var arg_alpha_min = 0
+	var arg_alpha_min = 0.3
 	var arg_alpha_max = 1
-	var arg_alpha_change = 0.02
+	var arg_alpha_change_percent = 0.015
 	var arg_frame_time_max = 1
 	if (array_length(aargs) == 2) {
-		arg_alpha_change = aargs[0]
-		arg_frame_time_max = aargs[1]
+		arg_alpha_min = aargs[0]
+		arg_alpha_max = aargs[1]
+	} else if (array_length(aargs) == 4) {
+		arg_alpha_min = aargs[0]
+		arg_alpha_max = aargs[1]
+		arg_alpha_change_percent = aargs[2]
+		arg_frame_time_max = aargs[3]
 	} else if (array_length(aargs) != 0) {
-		show_error("tds error: incorrect number of arguments for effect \"fade\"", true)
+		__tds_error_fx_args("fade")
 	}
 	return {
-		char_refs:		[],
-		affects_color:	false,
-		alpha_min:		arg_alpha_min,
-		alpha_max:		arg_alpha_max,
-		alpha_change:	arg_alpha_change,
-		frame_time_max:	arg_frame_time_max,
-		time:			0,
-		mod_alpha:		1,	
+		char_refs:				[],
+		alpha_min:				arg_alpha_min,
+		alpha_max:				arg_alpha_max,
+		alpha_change_percent:	arg_alpha_change_percent,
+		frame_time_max:			arg_frame_time_max,
+		change_dir:				-1,
+		time:					0,
+		mod_alpha:				1,	
 		update:			function() {
+			var change = (alpha_max - alpha_min) * alpha_change_percent
 			time--
 			if (time <= 0) {
 				time = frame_time_max
-				mod_alpha -= alpha_change
-				if (mod_alpha < alpha_min) {
+				mod_alpha += change * change_dir
+				if (mod_alpha <= alpha_min) {
 					mod_alpha = alpha_min
-					alpha_change *= -1
-				} else if (mod_alpha > alpha_max) {
+					change_dir *= -1
+				} else if (mod_alpha >= alpha_max) {
 					mod_alpha = alpha_max
-					alpha_change *= -1
+					change_dir *= -1
 				}
 			}
 			for (var i = 0; i < array_length(char_refs); i++) {
@@ -113,7 +121,6 @@ function __tds_fx_chromatic(aargs) {
 	var min_rgb = 0
 	return {
 		char_refs:	[],
-		affects_color:	true,
 		rgb_change:	10,
 		rgb_max:	max_rgb,
 		rgb_min:	min_rgb,
@@ -168,11 +175,10 @@ function __tds_fx_chromatic(aargs) {
 
 function __tds_fx_rgb(aargs) {
 	if (array_length(aargs) != 3) {
-		show_error("tds error: incorrect number of arguments for effect \"rgb\"", true)
+		__tds_error_fx_args("rgb")
 	}
 	return {
 		char_refs:	[],
-		affects_color:	true,
 		red:		aargs[0],
 		green:		aargs[1],
 		blue:		aargs[2],

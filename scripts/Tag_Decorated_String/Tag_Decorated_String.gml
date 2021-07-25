@@ -40,8 +40,8 @@ function __tds_get_commands_at_i(source_string, index) {
 
 function __tds_parse_commands_into_arr(command_string, fx_array) {
 	var new_fx = __tds_get_fx_array(command_string)
-	for (var f = 0; f < array_length(new_fx); f++) {
-		array_push(fx_array, new_fx[@ f])
+	for (var i = 0; i < array_length(new_fx); i++) {
+		array_push(fx_array, new_fx[@ i])
 	}
 }
 
