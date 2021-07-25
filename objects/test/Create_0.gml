@@ -1,10 +1,26 @@
-/// @description Insert description here
-// You can write your code in this editor
-
-massive_string = ""
-for (var i = 0; i < 10; i ++) {
-	massive_string += "The <wshake>quick<> brown fox <shake>jumps<> over the lazy dog."
+massive_str = ""
+for (var i = 0; i < 1; i ++) {
+	massive_str += (
+		"<red>red " +
+		"<yellow>yellow " +
+		"<blue>blue " + 
+		"<green>green " +
+		"<orange>orange " +
+		"<purple>purple " +
+		"<black>black " +
+		"<white>white " +
+		"<ltgray>ltgray " +
+		"<dkgray>dkgray " +
+		"<brown>brown " +
+		"<pink>pink " +
+		"<teal>teal " +
+		"<aqua>aqua " +
+		"<fuchsia>fuchsia " +
+		"<lime>lime " +
+		"<maroon>maroon " +
+		"<navy>navy " +
+		"<olive>olive " +
+		"<silver>silver "
+	)
 }
-
-//thing = new Tag_Decorated_String("The quick brown fox <shake>jumps<> over the lazy dog. Let's go to the ocean. <shake:3,1 wshake:10,10>Surfing<> <wshake>waves<> is super fun!")
-thing = new Tag_Decorated_String(massive_string)
+tds_test = new Tag_Decorated_String(massive_str)

@@ -1,3 +1,8 @@
+/*
+	All effects must contain a char_refs array and an update function. The update function should
+	act on all elements in the char_refs array. Everything else dependson the effect. 
+*/
+
 function __tds_fx_shake(aargs) {
 	var arg_frame_time_max = 5
 	var arg_pixel_offset = 1
@@ -67,8 +72,92 @@ function __tds_fx_wshake(aargs) {
 }
 
 function __tds_fx_chromatic(aargs) {
+	var max_rgb = 255
+	var min_rgb = 0
 	return {
 		char_refs:	[],
-		rgb_change:	10
+		rgb_change:	10,
+		rgb_max:	max_rgb,
+		rgb_min:	min_rgb,
+		red:		max_rgb,
+		green:		0,
+		blue:		0,
+		state:		1,
+		update:		function() {
+			if (state == 0) {
+				red += rgb_change
+				if (red > rgb_max) {
+					red = rgb_max
+					state++
+				}
+			} else if (state == 1) {
+				blue -= rgb_change
+				if (blue < rgb_min) {
+					blue = rgb_min
+					state++
+				}
+			} else if (state == 2) {
+				green += rgb_change
+				if (green > rgb_max) {
+					green = rgb_max
+					state++
+				}
+			} else if (state == 3) {
+				red -= rgb_change
+				if (red < rgb_min) {
+					red = rgb_min
+					state++
+				}
+			} else if (state == 4) {
+				blue += rgb_change
+				if (blue > rgb_max) {
+					blue = rgb_max
+					state++
+				}
+			} else if (state == 5) {
+				green -= rgb_change
+				if (green < rgb_min) {
+					green = rgb_min
+					state = 0
+				}
+			}
+			for (var i = 0; i < array_length(char_refs); i++) {
+				char_refs[@ i].c_color = make_color_rgb(red, green, blue)
+			}
+		}
 	}
+}
+
+function __tds_fx_rgb(aargs) {
+	if (array_length(aargs) != 3) {
+		show_error("tds error: incorrect number of arguments for effect \"rgb\"", true)
+	}
+	return {
+		char_refs:	[],
+		red:		aargs[0],
+		green:		aargs[1],
+		blue:		aargs[2],
+		update:		function() {
+			for (var i = 0; i < array_length(char_refs); i++) {
+				char_refs[@ i].c_color = make_color_rgb(red, green, blue)
+			}
+		}
+	}
+}
+
+function __tds_get_fx(command, aargs) {
+	command = __tds_color_to_rgb(command, aargs)
+	if (command == "rgb") {
+		return __tds_fx_rgb(aargs)
+	}
+	if (command == "shake") {
+		return __tds_fx_shake(aargs)
+	}
+	if (command == "wshake") {
+		return __tds_fx_wshake(aargs)
+	}
+	if (command == "chromatic") {
+		return __tds_fx_chromatic(aargs)
+	}
+	show_error("tds error: effect \"" + command + "\" not recognized", true)
 }

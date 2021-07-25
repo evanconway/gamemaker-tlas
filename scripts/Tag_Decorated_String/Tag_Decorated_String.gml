@@ -59,7 +59,7 @@ function __tds_get_fx_array(command_string) {
 	for (var i = 0; i < array_length(commands_raw_strings); i++) {
 		var command_and_aargs = __tds_string_split(commands_raw_strings[@ i], ":")
 		var command = command_and_aargs[@ 0]
-		var aargs = []
+		var aargs = [] // aargs instead of args due to YYC error
 		if (array_length(command_and_aargs) > 1) {
 			aargs = __tds_string_split(command_and_aargs[@ 1], ",")
 			__tds_aargs_strings_to_numbers(aargs)
@@ -95,14 +95,4 @@ function __tds_string_split(s, delimiter) {
 		}
 	}
 	return result
-}
-
-function __tds_get_fx(command, aargs) {
-	if (command == "shake") {
-		return __tds_fx_shake(aargs)
-	}
-	if (command == "wshake") {
-		return __tds_fx_wshake(aargs)
-	}
-	show_error("tds error: effect \"" + command + "\" not recognized", true)
 }

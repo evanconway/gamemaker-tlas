@@ -1,6 +1,7 @@
 {
   "resources": [
     {"id":{"name":"tds_font_default","path":"fonts/tds_font_default/tds_font_default.yy",},"order":2,},
+    {"id":{"name":"tds_color_to_rgb","path":"scripts/tds_color_to_rgb/tds_color_to_rgb.yy",},"order":5,},
     {"id":{"name":"test","path":"objects/test/test.yy",},"order":2,},
     {"id":{"name":"tds_draw","path":"scripts/tds_draw/tds_draw.yy",},"order":3,},
     {"id":{"name":"tds_Character","path":"scripts/tds_Character/tds_Character.yy",},"order":4,},
