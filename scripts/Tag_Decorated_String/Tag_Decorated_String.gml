@@ -56,13 +56,13 @@ function __tds_handle_new_character(char, fx_array, char_array) {
 function __tds_get_commands_at_i(source_string, index) {
 	var end_of_commands = string_pos_ext(">", source_string, index)
 	var command_string = string_copy(source_string, index + 1, end_of_commands - index - 1)
-	return command_string
+	return string_lower(command_string)
 }
 
-function __tds_parse_commands_into_arr(command_string, fx_array) {
+function __tds_parse_commands_into_arr(command_string, fx_arr_temp) {
 	var new_fx = __tds_get_fx_array(command_string)
 	for (var i = 0; i < array_length(new_fx); i++) {
-		array_push(fx_array, new_fx[@ i])
+		array_push(fx_arr_temp, new_fx[@ i])
 	}
 }
 
@@ -75,7 +75,6 @@ function __tds_arr_append_and_clear(arr_append_to, arr_to_clear) {
 
 function __tds_get_fx_array(command_string) {
 	var fx = []
-	command_string = string_lower(command_string)
 	var commands_raw_strings = __tds_string_split(command_string, " ")
 	for (var i = 0; i < array_length(commands_raw_strings); i++) {
 		var command_and_aargs = __tds_string_split(commands_raw_strings[@ i], ":")
