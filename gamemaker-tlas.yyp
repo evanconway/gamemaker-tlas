@@ -4,6 +4,7 @@
     {"id":{"name":"tds_font_default","path":"fonts/tds_font_default/tds_font_default.yy",},"order":2,},
     {"id":{"name":"__tds_color_to_rgb","path":"scripts/__tds_color_to_rgb/__tds_color_to_rgb.yy",},"order":5,},
     {"id":{"name":"o_test_draw_sprite","path":"objects/o_test_draw_sprite/o_test_draw_sprite.yy",},"order":6,},
+    {"id":{"name":"o_sprite_drawing","path":"objects/o_sprite_drawing/o_sprite_drawing.yy",},"order":9,},
     {"id":{"name":"f_handwriting","path":"fonts/f_handwriting/f_handwriting.yy",},"order":4,},
     {"id":{"name":"test","path":"objects/test/test.yy",},"order":2,},
     {"id":{"name":"o_stress_test","path":"objects/o_stress_test/o_stress_test.yy",},"order":8,},
