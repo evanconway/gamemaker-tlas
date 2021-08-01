@@ -1,1 +1,0 @@
-my_tds = new Tag_Decorated_String("Here is a <fade offset:0,-4><sprite:s_button><>, press it!")

@@ -1,106 +1,90 @@
-function Tag_Decorated_String(source_string) constructor {
+function Tag_Decorated_String() constructor {
+	source = ""
 	characters = []
-	fx = []
-	var fx_temp = []
-	for (var i = 1; i <= string_length(source_string); i++) {
-		var char = string_char_at(source_string, i)
-		if (char == "<") {
-			__tds_handle_sprite(source_string, i, characters, fx_temp)
-			__tds_handle_commands_at_i(source_string, i, fx, fx_temp)
-			i = string_pos_ext(">", source_string, i)
+	default_style = new __tds_Style()
+	max_width = 280
+	//lines = []
+}
+
+function tds_set_text(tds, new_source_string) {
+	with (tds) {
+		source = new_source_string
+		var line_width = 0
+		var line_index = 0
+		for (var i = 1; i <= string_length(source); i++) {
+			var char = string_char_at(source, i)
+			if (char == "<") {
+				var commands = __tds_get_commands_at(i)
+				i = string_pos_ext(">", source, i)
+			} else {
+				var c = new __tds_Character(char, default_style, line_index, 0, 0)
+				array_push(characters, c)
+				line_width += c.char_width
+				if (char != " " && line_width > max_width) {
+					line_width = c.char_width
+					line_index++
+					__tds_start_new_line(line_index)
+				}
+			}
+		}
+		__tds_set_characters_xy()
+	}
+}
+
+function __tds_start_new_line(new_line_index) {
+	var i = array_length(characters)-1
+	var start_index = 0
+	while (characters[@ i].character != " ") {
+		characters[@ i].line_index = new_line_index
+		start_index = i
+		i--
+	}
+}
+
+function __tds_set_characters_xy() {
+	var line_heights = ds_map_create()
+	for (var i = 0; i < array_length(characters); i++) {
+		var c = characters[@ i]
+		if (ds_map_exists(line_heights, c.line_index)) {
+			if (c.char_height > line_heights[? c.line_index]) {
+				line_heights[? c.line_index] = c.char_height
+			}
 		} else {
-			__tds_handle_new_character(char, fx_temp, characters)
+			ds_map_add(line_heights, c.line_index, c.char_height)
 		}
 	}
-	for (var f = 0; f < array_length(fx_temp); f++) {
-		array_push(fx, fx_temp[@ f])
-	}
-}
-
-function __tds_handle_sprite(source_string, index, characters, fx_temp) {
-	var string_commands = __tds_get_commands_at_i(source_string, index)
-	var string_arr = __tds_string_split(string_commands, ":")
-	if (array_length(string_arr) == 2 && string_arr[@ 0] == "sprite") {
-		if (array_length(string_arr) == 1) {
-			show_error("tds error: sprite command missing value", true)
+	var X = 0
+	var Y = 0
+	var line_i_prev = 0
+	var c
+	for (var i = 0; i < array_length(characters); i++) {
+		c = characters[@ i]
+		if (c.line_index != line_i_prev) {
+			X = 0
+			Y += line_heights[? line_i_prev]
+			line_i_prev = c.line_index
 		}
-		var sprite_id = asset_get_index(string_arr[@ 1])
-		if (!sprite_exists(sprite_id)) {
-			show_error("tds error: sprite \"" + string_arr[@ 1] + "\" does not exist.", true)
-		}
-		var sprite_char = new __tds_Character("")
-		sprite_char.sprite = sprite_id
-		for (var i = 0; i < array_length(fx_temp); i++) {
-			array_push(fx_temp[@ i].char_refs, sprite_char)
-		}
-		array_push(characters, sprite_char)
+		c.char_x = X
+		X += c.char_width
+		c.char_y = Y
+	}
+	ds_map_destroy(line_heights)
+}
+
+function tds_draw(tds, X, Y) {
+	for (var i = 0; i < array_length(tds.characters); i++) {
+		var char = tds.characters[@ i]
+		var draw_x = X + char.char_x
+		var draw_y = Y + char.char_y
+		draw_text(draw_x, draw_y, char.character)
 	}
 }
 
-function __tds_handle_commands_at_i(source_string, index, fx_arr_main, fx_arr_temp) {
-	var string_commands = __tds_get_commands_at_i(source_string, index)
-	__tds_parse_commands_into_arr(string_commands, fx_arr_temp)
-	if (string_commands == "") {
-		__tds_arr_append_and_clear(fx_arr_main, fx_arr_temp)
-	}
-}
-
-function __tds_handle_new_character(char, fx_array, char_array) {
-	var new_character = new __tds_Character(char)
-	for (var i = 0; i < array_length(fx_array); i++) {
-		array_push(fx_array[@ i].char_refs, new_character)
-	}
-	array_push(char_array, new_character)
-}
-
-function __tds_get_commands_at_i(source_string, index) {
-	var end_of_commands = string_pos_ext(">", source_string, index)
-	var command_string = string_copy(source_string, index + 1, end_of_commands - index - 1)
-	return string_lower(command_string)
-}
-
-function __tds_parse_commands_into_arr(command_string, fx_arr_temp) {
-	var new_fx = __tds_get_fx_array(command_string)
-	for (var i = 0; i < array_length(new_fx); i++) {
-		array_push(fx_arr_temp, new_fx[@ i])
-	}
-}
-
-function __tds_arr_append_and_clear(arr_append_to, arr_to_clear) {
-	for (var i = 0; i < array_length(arr_to_clear); i++) {
-		array_push(arr_append_to, arr_to_clear[@ i])
-	}
-	array_resize(arr_to_clear, 0)
-}
-
-function __tds_get_fx_array(command_string) {
-	var fx = []
-	var commands_raw_strings = __tds_string_split(command_string, " ")
-	for (var i = 0; i < array_length(commands_raw_strings); i++) {
-		var command_and_aargs = __tds_string_split(commands_raw_strings[@ i], ":")
-		var command = command_and_aargs[@ 0]
-		var aargs = [] // aargs instead of args due to YYC error
-		if (array_length(command_and_aargs) > 1) {
-			aargs = __tds_string_split(command_and_aargs[@ 1], ",")
-			__tds_aargs_strings_to_numbers(aargs)
-		}
-		var new_fx = __tds_get_fx(command, aargs)
-		if (new_fx != undefined) {
-			array_push(fx, new_fx)
-		}
-	}
-	return fx
-}
-
-function __tds_aargs_strings_to_numbers(aargs) {
-	for (var i = 0; i < array_length(aargs); i++) {
-		try {
-			var number = real(aargs[@ i])
-			aargs[@ i] = number
-		} catch (e) {
-			// do nothing
-		}
-	}
+function __tds_get_commands_at(start_i) {
+	var end_i = string_pos_ext(">", source, start_i)
+	var commands_all = string_copy(source, start_i + 1, end_i - start_i - 1)
+	var commands_indv = __tds_string_split(commands_all, " ")
+	return commands_indv
 }
 
 function __tds_string_split(s, delimiter) {
