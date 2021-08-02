@@ -36,9 +36,8 @@ function tds_set_text(tds, new_source_string) {
 				array_push(characters, c)
 				line_width += c.char_width
 				if (char != " " && line_width > max_width) {
-					line_width = c.char_width
 					line_index++
-					__tds_start_new_line(line_index)
+					line_width = __tds_start_new_line(line_index)
 				}
 			}
 		}
@@ -48,12 +47,13 @@ function tds_set_text(tds, new_source_string) {
 
 function __tds_start_new_line(new_line_index) {
 	var i = array_length(characters)-1
-	var start_index = 0
+	var new_line_width = 0
 	while (characters[@ i].character != " ") {
 		characters[@ i].line_index = new_line_index
-		start_index = i
+		new_line_width += characters[@ i].char_width
 		i--
 	}
+	return new_line_width
 }
 
 function __tds_set_characters_xy() {
@@ -90,20 +90,18 @@ function __tds_set_characters_xy() {
 }
 
 function __tds_drawables_add(char_index) {
-	if (char_index = 240) {
-		show_debug_message("find problem")
-	}
-	if (characters[@ char_index].added) {
+	var c = characters[@ char_index]
+	if (c.added) {
 		return
 	}
-	characters[@ char_index].added = true
+	c.added = true
 	var drawable = {
 		previous:	undefined,
 		next:		undefined,
 		i_start:	char_index,
 		i_end:		char_index,
-		content:	characters[@ char_index].character,
-		style:		__tds_style_copy(characters[@ char_index].style)
+		content:	c.character,
+		style:		__tds_style_copy(c.style)
 	}
 	if (drawables == undefined) {
 		drawables = drawable
