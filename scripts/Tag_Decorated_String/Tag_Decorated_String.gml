@@ -2,9 +2,23 @@ function Tag_Decorated_String() constructor {
 	source = ""
 	characters = []
 	default_style = new __tds_Style()
-	max_width = 280
+	max_width = 500
 	drawables = undefined
-	//lines = []
+	create_drawables_on_set_text = true
+}
+
+function tds_get_characters_size(tds) {
+	return array_length(tds.characters)
+}
+
+function tds_get_character_at(tds, index) {
+	return tds.characters[@ index].character
+}
+
+function tds_start_entry_at(tds, character_index) {
+	with (tds) {
+		__tds_drawables_add(character_index)
+	}
 }
 
 function tds_set_text(tds, new_source_string) {
@@ -68,12 +82,21 @@ function __tds_set_characters_xy() {
 		c.char_x = X
 		X += c.char_width
 		c.char_y = Y
-		__tds_drawables_add(i)
+		if (create_drawables_on_set_text) {
+			__tds_drawables_add(i)
+		}
 	}
 	ds_map_destroy(line_heights)
 }
 
 function __tds_drawables_add(char_index) {
+	if (char_index = 240) {
+		show_debug_message("find problem")
+	}
+	if (characters[@ char_index].added) {
+		return
+	}
+	characters[@ char_index].added = true
 	var drawable = {
 		previous:	undefined,
 		next:		undefined,
@@ -88,7 +111,9 @@ function __tds_drawables_add(char_index) {
 	}
 	var left = __tds_get_drawable_left(drawable.i_start)
 	var right = __tds_get_drawable_right(drawable.i_start)
-	left.next = drawable
+	if (left != undefined) {
+		left.next = drawable
+	}
 	drawable.previous = left
 	if (right != undefined) {
 		right.previous = drawable
@@ -122,6 +147,9 @@ function __tds_get_drawable_left(target_index) {
 		return undefined
 	}
 	var result = drawables
+	if (drawables.i_start > target_index) {
+		return undefined
+	}
 	while (result.next != undefined && result.next.i_end < target_index) {
 		result = result.next
 	}
@@ -166,6 +194,8 @@ function tds_draw(tds, X, Y) {
 		draw_text_transformed(draw_x, draw_y, cursor.content, scale_x, scale_y, angle)
 		cursor = cursor.next
 	}
+	draw_set_color(c_fuchsia)
+	draw_rectangle(X, Y, X + tds.max_width, Y + 1000, true)
 }
 
 function __tds_get_commands_at(start_i) {

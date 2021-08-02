@@ -1,5 +1,6 @@
 function __tds_Character(new_character, new_style, new_line_index, X, Y) constructor {
 	character = new_character
+	added = false
 	style = __tds_style_copy(new_style)
 	char_x = X
 	char_y = Y
