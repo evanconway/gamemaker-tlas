@@ -2,9 +2,9 @@ function Tag_Decorated_String() constructor {
 	source = ""
 	characters = []
 	default_style = new __tds_Style()
-	max_width = 500
+	max_width = 1300
 	drawables = undefined
-	create_drawables_on_set_text = true
+	create_drawables_on_set_text = false
 }
 
 function tds_get_characters_size(tds) {
@@ -123,6 +123,9 @@ function __tds_drawables_add(char_index) {
 	} else {
 		__tds_drawable_merge(drawable, right)
 	}
+	while (drawables.previous != undefined) {
+		drawables = drawables.previous
+	}
 }
 
 function __tds_drawable_merge(a, b) {
@@ -132,11 +135,15 @@ function __tds_drawable_merge(a, b) {
 	if (characters[@ a.i_start].line_index != characters[@ b.i_start].line_index) {
 		return false
 	}
-	if (__tds_style_equal(a.style, b.style) && a.i_end == b.i_start - 1) {
-		a.content += b.content
-		a.i_end += (b.i_end - b.i_start + 1)
-		a.next = b.next
+	if (a.i_end != b.i_start - 1) {
+		return false
 	}
+	if (!__tds_style_equal(a.style, b.style)) {
+		return false
+	}
+	a.content += b.content
+	a.i_end += (b.i_end - b.i_start + 1)
+	a.next = b.next
 	return true
 }
 
@@ -193,7 +200,7 @@ function tds_draw(tds, X, Y) {
 		cursor = cursor.next
 	}
 	draw_set_color(c_fuchsia)
-	draw_rectangle(X, Y, X + tds.max_width, Y + 1000, true)
+	draw_rectangle(X, Y, X + tds.max_width, Y + 440, true)
 }
 
 function __tds_get_commands_at(start_i) {

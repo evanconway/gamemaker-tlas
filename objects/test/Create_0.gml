@@ -6,3 +6,7 @@ chars = array_create(tds_get_characters_size(whatever), 0)
 for (var i = 0; i < array_length(chars); i++) {
 	chars[@ i] = i
 }
+active = false
+//tds_start_entry_at(whatever, 600)
+//tds_start_entry_at(whatever, 601)
+//tds_start_entry_at(whatever, 602)
