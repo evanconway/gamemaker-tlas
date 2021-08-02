@@ -9,6 +9,20 @@ function __tds_Style() constructor {
 	mod_angle = 0
 }
 
+function __tds_get_style(original_style, commands) {
+	var result = __tds_style_copy(original_style)
+	for (var i = 0; i < array_length(commands); i++) {
+		var c = commands[@ i].command
+		var a = commands[@ i].aargs
+		c = __tds_color_to_rgb(c, a)
+		if (c == "rgb") {
+			__tds_arr_string_to_nums(a)
+			result.s_color = make_color_rgb(a[@ 0], a[@ 1], a[@ 2])
+		}
+	}
+	return result
+}
+
 function __tds_style_copy(style_to_copy) {
 	var result = new __tds_Style()
 	result.font = style_to_copy.font

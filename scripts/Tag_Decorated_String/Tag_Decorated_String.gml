@@ -26,13 +26,15 @@ function tds_set_text(tds, new_source_string) {
 		source = new_source_string
 		var line_width = 0
 		var line_index = 0
+		var style = default_style
 		for (var i = 1; i <= string_length(source); i++) {
 			var char = string_char_at(source, i)
 			if (char == "<") {
 				var commands = __tds_get_commands_at(i)
+				style = __tds_get_style(default_style, commands)
 				i = string_pos_ext(">", source, i)
 			} else {
-				var c = new __tds_Character(char, default_style, line_index, 0, 0)
+				var c = new __tds_Character(char, style, line_index, 0, 0)
 				array_push(characters, c)
 				line_width += c.char_width
 				if (char != " " && line_width > max_width) {
@@ -107,6 +109,10 @@ function __tds_drawables_add(char_index) {
 		drawables = drawable
 		return
 	}
+	__tds_drawable_merge_bothsides(drawable)
+}
+
+function __tds_drawable_merge_bothsides(drawable) {
 	var left = __tds_get_drawable_left(drawable.i_start)
 	var right = __tds_get_drawable_right(drawable.i_start)
 	if (left != undefined) {
@@ -207,7 +213,20 @@ function __tds_get_commands_at(start_i) {
 	var end_i = string_pos_ext(">", source, start_i)
 	var commands_all = string_copy(source, start_i + 1, end_i - start_i - 1)
 	var commands_indv = __tds_string_split(commands_all, " ")
-	return commands_indv
+	var result = array_create(array_length(commands_indv), undefined)
+	for (var i = 0; i < array_length(commands_indv); i++) {
+		var command_and_aargs = __tds_string_split(commands_indv[@ i], ":")
+		var c = command_and_aargs[@ 0]
+		var a = []
+		if (array_length(command_and_aargs) > 1) {
+			a = __tds_string_split(command_and_aargs[@ 1], ",")
+		}
+		result[@ i] = {
+			command:	c,
+			aargs:		a
+		}
+	}
+	return result
 }
 
 function __tds_string_split(s, delimiter) {
@@ -227,4 +246,15 @@ function __tds_string_split(s, delimiter) {
 		}
 	}
 	return result
+}
+
+function __tds_arr_string_to_nums(array) {
+	for (var i = 0; i < array_length(array); i++) {
+		try {
+			var number = real(array[@ i])
+			array[@ i] = number
+		} catch (e) {
+			// do nothing
+		}
+	}
 }
