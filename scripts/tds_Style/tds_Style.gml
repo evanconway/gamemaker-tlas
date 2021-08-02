@@ -21,3 +21,31 @@ function __tds_style_copy(style_to_copy) {
 	result.mod_angle = style_to_copy.mod_angle
 	return result
 }
+
+function __tds_style_equal(style_a, style_b) {
+	if (style_a.font != style_b.font) {
+		return false
+	}
+	if (style_a.s_color != style_b.s_color) {
+		return false
+	}
+	if (style_a.alpha != style_b.alpha) {
+		return false
+	}
+	if (style_a.scale_x != style_b.scale_x) {
+		return false
+	}
+	if (style_a.scale_y != style_b.scale_y) {
+		return false
+	}
+	if (style_a.mod_x != style_b.mod_x) {
+		return false
+	}
+	if (style_a.mod_y != style_b.mod_y) {
+		return false
+	}
+	if (style_a.mod_angle != style_b.mod_angle) {
+		return false
+	}
+	return true
+}
