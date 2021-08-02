@@ -16,8 +16,43 @@ function __tds_get_style(original_style, commands) {
 		var a = commands[@ i].aargs
 		c = __tds_color_to_rgb(c, a)
 		if (c == "rgb") {
-			__tds_arr_string_to_nums(a)
 			result.s_color = make_color_rgb(a[@ 0], a[@ 1], a[@ 2])
+		}
+		if (c == "font") {
+			if (array_length(a) != 1) {
+				show_error("TDS: Incorrect number of args for font style.", true)
+			}
+			if (asset_get_type(a[@ 0]) != asset_font) {
+				show_error("TDS: Unrecognized font name.", true)
+			}
+			result.font = asset_get_index(a[@ 0])
+			
+		}
+		if (c == "scale") {
+			if (array_length(a) != 2) {
+				show_error("TDS: Incorrect number of args for scale style.", true)
+			}
+			result.scale_x = a[@ 0]
+			result.scale_y = a[@ 1]
+		}
+		if (c == "angle") {
+			if (array_length(a) != 1) {
+				show_error("TDS: Incorrect number of args for angle style.", true)
+			}
+			result.mod_angle = a[@ 0]
+		}
+		if (c == "alpha") {
+			if (array_length(a) != 1) {
+				show_error("TDS: Incorrect number of args for alpha style.", true)
+			}
+			result.alpha = a[@ 0]
+		}
+		if (c == "offset") {
+			if (array_length(a) != 2) {
+				show_error("TDS: Incorrect number of args for offset style.", true)
+			}
+			result.mod_x = a[@ 0]
+			result.mod_y = a[@ 1]
 		}
 	}
 	return result

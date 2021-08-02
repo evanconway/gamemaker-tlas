@@ -220,6 +220,7 @@ function __tds_get_commands_at(start_i) {
 		var a = []
 		if (array_length(command_and_aargs) > 1) {
 			a = __tds_string_split(command_and_aargs[@ 1], ",")
+			__tds_arr_string_to_nums(a)
 		}
 		result[@ i] = {
 			command:	c,
