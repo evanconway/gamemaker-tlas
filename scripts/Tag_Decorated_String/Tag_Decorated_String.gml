@@ -2,9 +2,9 @@ function Tag_Decorated_String() constructor {
 	source = ""
 	characters = []
 	default_style = new __tds_Style()
-	max_width = 1300
+	max_width = 500
 	drawables = undefined
-	create_drawables_on_set_text = false
+	create_drawables_on_set_text = true
 }
 
 function tds_get_characters_size(tds) {
@@ -26,15 +26,18 @@ function tds_set_text(tds, new_source_string) {
 		source = new_source_string
 		var line_width = 0
 		var line_index = 0
+		var commands = []
 		var style = default_style
+		var animations = []
 		for (var i = 1; i <= string_length(source); i++) {
 			var char = string_char_at(source, i)
 			if (char == "<") {
-				var commands = __tds_get_commands_at(i)
-				style = __tds_get_style(default_style, commands)
+				commands = __tds_get_commands_at(i)
 				i = string_pos_ext(">", source, i)
 			} else {
-				var c = new __tds_Character(char, style, line_index, 0, 0)
+				style = __tds_get_style(default_style, commands)
+				animations = __tds_get_animations(commands)
+				var c = new __tds_Character(char, style, animations, line_index)
 				array_push(characters, c)
 				line_width += c.char_width
 				if (char != " " && line_width > max_width) {
@@ -103,7 +106,9 @@ function __tds_drawables_add(char_index) {
 		i_start:	char_index,
 		i_end:		char_index,
 		content:	c.character,
-		style:		__tds_style_copy(c.style)
+		style:		__tds_style_copy(c.style),
+		animations: __tds_animations_copy(c.animations),
+		anim_hash:	__tds_animation_hash(c.animations)
 	}
 	if (drawables == undefined) {
 		drawables = drawable
@@ -136,6 +141,9 @@ function __tds_drawable_merge_bothsides(drawable) {
 
 function __tds_drawable_merge(a, b) {
 	if (a == undefined || b == undefined) {
+		return false
+	}
+	if (a.anim_hash != b.anim_hash) {
 		return false
 	}
 	if (characters[@ a.i_start].line_index != characters[@ b.i_start].line_index) {
@@ -189,6 +197,7 @@ function tds_draw(tds, X, Y) {
 	var draw_x
 	var draw_y
 	var angle
+	var drawable_counter = 0
 	while (cursor != undefined) {
 		char_x = tds.characters[@ cursor.i_start].char_x
 		char_y = tds.characters[@ cursor.i_start].char_y
@@ -204,9 +213,10 @@ function tds_draw(tds, X, Y) {
 		draw_set_alpha(cursor.style.alpha)
 		draw_text_transformed(draw_x, draw_y, cursor.content, scale_x, scale_y, angle)
 		cursor = cursor.next
+		drawable_counter++
 	}
 	draw_set_color(c_fuchsia)
-	draw_rectangle(X, Y, X + tds.max_width, Y + 440, true)
+	draw_rectangle(X, Y, X + tds.max_width, Y + 480, true)
 }
 
 function __tds_get_commands_at(start_i) {

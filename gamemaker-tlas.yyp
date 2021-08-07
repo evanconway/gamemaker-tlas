@@ -3,6 +3,7 @@
     {"id":{"name":"tds_Style","path":"scripts/tds_Style/tds_Style.yy",},"order":7,},
     {"id":{"name":"s_button","path":"sprites/s_button/s_button.yy",},"order":5,},
     {"id":{"name":"tds_font_default","path":"fonts/tds_font_default/tds_font_default.yy",},"order":2,},
+    {"id":{"name":"tds_Animations","path":"scripts/tds_Animations/tds_Animations.yy",},"order":8,},
     {"id":{"name":"__tds_color_to_rgb","path":"scripts/__tds_color_to_rgb/__tds_color_to_rgb.yy",},"order":5,},
     {"id":{"name":"f_handwriting","path":"fonts/f_handwriting/f_handwriting.yy",},"order":4,},
     {"id":{"name":"test","path":"objects/test/test.yy",},"order":2,},
