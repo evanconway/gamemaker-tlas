@@ -19,6 +19,15 @@ function __tds_animation(command, aargs) {
 	return undefined
 }
 
+global.tds_animation_default_fade_alpha_min = 0.3
+global.tds_animation_default_fade_alpha_max = 1
+global.tds_animation_default_fade_cycle_time = 1000
+function tds_animation_default_fade(alpha_min, alpha_max, cycle_time) {
+	global.tds_animation_default_fade_alpha_min = alpha_min
+	global.tds_animation_default_fade_alpha_max = alpha_max
+	global.tds_animation_default_fade_cycle_time = cycle_time
+}
+
 function __tds_animation_Fade(aargs) constructor {
 	var temp = new __tds_Style()
 	temp.font = undefined
@@ -29,11 +38,31 @@ function __tds_animation_Fade(aargs) constructor {
 	temp.mod_x = undefined
 	temp.mod_y = undefined
 	temp.mod_angle = undefined
+	style = temp
 	command = "fade"
 	params = aargs
-	style = temp
-	update = function() {
-		style.alpha = 0.3
+	alpha_min = global.tds_animation_default_fade_alpha_min
+	alpha_max = global.tds_animation_default_fade_alpha_max
+	cycle_time = global.tds_animation_default_fade_cycle_time
+	if (array_length(aargs) == 2) {
+		alpha_min = aargs[@ 0]
+		alpha_max = aargs[@ 1]
+	} else if (array_length(aargs) == 3) {
+		alpha_min = aargs[@ 0]
+		alpha_max = aargs[@ 1]
+		cycle_time = aargs[@ 2]
+	} else if (array_length(aargs) != 0) {
+		show_error("TDS Error: Improper number of args for fade animation!", true)
+	}
+	update = function(time_ms) {
+		var check = time_ms % (cycle_time * 2)
+		if (check <= cycle_time) {
+			check = cycle_time - check
+		} else {
+			check -= cycle_time
+		}
+		var new_alpha = alpha_min + check/cycle_time * (alpha_max - alpha_min)
+		style.alpha = new_alpha
 	}
 }
 

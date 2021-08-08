@@ -5,6 +5,7 @@ function Tag_Decorated_String() constructor {
 	max_width = 500
 	drawables = undefined
 	create_drawables_on_set_text = true
+	update_time_ms = 0
 }
 
 function tds_set_drawable_on_settext(tds, boolean) {
@@ -213,7 +214,7 @@ function __tds_drawable_update(drawable) {
 	}
 	__tds_drawable_init(drawable)
 	for (var i = 0; i < array_length(drawable.animations); i++) {
-		drawable.animations[@ i].update()
+		drawable.animations[@ i].update(update_time_ms)
 		var s = drawable.animations[@ i].style
 		if (s.mod_angle != undefined) {
 			drawable.style.mod_angle += s.mod_angle
@@ -242,14 +243,19 @@ function __tds_drawable_update(drawable) {
 	}
 }
 
-function tds_update(tds) {
+function tds_update_custom_time(tds, time_ms) {
 	with (tds) {
+		update_time_ms += time_ms
 		var cursor = drawables
 		while (cursor != undefined) {
 			__tds_drawable_update(cursor)
 			cursor = cursor.next
 		}
 	}
+}
+
+function tds_update(tds) {
+	tds_update_custom_time(tds, 1000 / 60)
 }
 
 function tds_draw_no_update(tds, X, Y) {
