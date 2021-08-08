@@ -6,6 +6,9 @@ function __tds_get_animations(commands) {
 			array_push(result, animation)
 		}
 	}
+	if (array_length(result) <= 0) {
+		result = undefined
+	}
 	return result
 }
 
@@ -35,6 +38,9 @@ function __tds_animation_Fade(aargs) constructor {
 }
 
 function __tds_animations_copy(animations) {
+	if (animations == undefined) {
+		return undefined
+	}
 	var result = []
 	for (var i = 0; i < array_length(animations); i++) {
 		var a = animations[@ i]
@@ -52,6 +58,9 @@ function __tds_aargs_tostring(aargs) {
 }
 
 function __tds_animation_hash(animations) {
+	if (animations == undefined) {
+		return ""
+	}
 	var result = ""
 	for (var i = 0; i < array_length(animations); i++) {
 		var a = animations[@ i]

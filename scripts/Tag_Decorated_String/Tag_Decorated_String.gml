@@ -7,6 +7,10 @@ function Tag_Decorated_String() constructor {
 	create_drawables_on_set_text = true
 }
 
+function tds_set_drawable_on_settext(tds, boolean) {
+	tds.create_drawables_on_set_text = boolean
+}
+
 function tds_get_characters_size(tds) {
 	return array_length(tds.characters)
 }
@@ -28,7 +32,7 @@ function tds_set_text(tds, new_source_string) {
 		var line_index = 0
 		var commands = []
 		var style = default_style
-		var animations = []
+		var animations = undefined // could be array
 		for (var i = 1; i <= string_length(source); i++) {
 			var char = string_char_at(source, i)
 			if (char == "<") {
@@ -94,22 +98,27 @@ function __tds_set_characters_xy() {
 	ds_map_destroy(line_heights)
 }
 
+function __tds_Drawable(char_index, character) constructor {
+	previous = undefined
+	next = undefined
+	i_start = char_index
+	i_end = char_index
+	content = character.character
+	style = __tds_style_copy(character.style)
+	animations = __tds_animations_copy(character.animations)
+	anim_hash = __tds_animation_hash(animations)
+	update = function() {
+	
+	}
+}
+
 function __tds_drawables_add(char_index) {
 	var c = characters[@ char_index]
 	if (c.added) {
 		return
 	}
 	c.added = true
-	var drawable = {
-		previous:	undefined,
-		next:		undefined,
-		i_start:	char_index,
-		i_end:		char_index,
-		content:	c.character,
-		style:		__tds_style_copy(c.style),
-		animations: __tds_animations_copy(c.animations),
-		anim_hash:	__tds_animation_hash(c.animations)
-	}
+	var drawable = new __tds_Drawable(char_index, c)
 	if (drawables == undefined) {
 		drawables = drawable
 		return
@@ -186,37 +195,90 @@ function __tds_get_drawable_right(target_index) {
 	return result
 }
 
-function tds_draw(tds, X, Y) {
-	var cursor = tds.drawables
-	var char_x
-	var char_y
-	var style_x
-	var style_y
-	var scale_x
-	var scale_y
-	var draw_x
-	var draw_y
-	var angle
-	var drawable_counter = 0
-	while (cursor != undefined) {
-		char_x = tds.characters[@ cursor.i_start].char_x
-		char_y = tds.characters[@ cursor.i_start].char_y
-		style_x = cursor.style.mod_x
-		style_y = cursor.style.mod_y
-		scale_x = cursor.style.scale_x
-		scale_y = cursor.style.scale_y
-		draw_x = X + char_x + style_x
-		draw_y = Y + char_y + style_y
-		angle = cursor.style.mod_angle
-		draw_set_font(cursor.style.font)
-		draw_set_color(cursor.style.s_color)
-		draw_set_alpha(cursor.style.alpha)
-		draw_text_transformed(draw_x, draw_y, cursor.content, scale_x, scale_y, angle)
-		cursor = cursor.next
-		drawable_counter++
+function __tds_drawable_init(drawable) {
+	var c = characters[@ drawable.i_start]
+	drawable.style.mod_angle = c.style.mod_angle
+	drawable.style.s_color = c.style.s_color
+	drawable.style.font = c.style.font
+	drawable.style.alpha = c.style.alpha
+	drawable.style.mod_x = c.style.mod_x
+	drawable.style.mod_y = c.style.mod_y
+	drawable.style.scale_x = c.style.scale_x
+	drawable.style.scale_y = c.style.scale_y
+}
+
+function __tds_drawable_update(drawable) {
+	if (drawable.animations == undefined) {
+		return
 	}
-	draw_set_color(c_fuchsia)
-	draw_rectangle(X, Y, X + tds.max_width, Y + 480, true)
+	__tds_drawable_init(drawable)
+	for (var i = 0; i < array_length(drawable.animations); i++) {
+		drawable.animations[@ i].update()
+		var s = drawable.animations[@ i].style
+		if (s.mod_angle != undefined) {
+			drawable.style.mod_angle += s.mod_angle
+		}
+		if (s.s_color != undefined) {
+			drawable.style.s_color = s.s_color
+		}
+		if (s.font != undefined) {
+			drawable.style.font = s.font
+		}
+		if (s.alpha != undefined) {
+			drawable.style.alpha *= s.alpha
+		}
+		if (s.mod_x != undefined) {
+			drawable.style.mod_x += s.mod_x
+		}
+		if (s.mod_y != undefined) {
+			drawable.style.mod_y += s.mod_y
+		}
+		if (s.scale_x != undefined) {
+			drawable.style.scale_x *= s.scale_x
+		}
+		if (s.scale_y != undefined) {
+			drawable.style.scale_y *= s.scale_y
+		}
+	}
+}
+
+function tds_update(tds) {
+	with (tds) {
+		var cursor = drawables
+		while (cursor != undefined) {
+			__tds_drawable_update(cursor)
+			cursor = cursor.next
+		}
+	}
+}
+
+function tds_draw_no_update(tds, X, Y) {
+	with (tds) {
+		var cursor = drawables
+		while (cursor != undefined) {
+			var char_x = characters[@ cursor.i_start].char_x
+			var char_y = characters[@ cursor.i_start].char_y
+			var style_x = cursor.style.mod_x
+			var style_y = cursor.style.mod_y
+			var scale_x = cursor.style.scale_x
+			var scale_y = cursor.style.scale_y
+			var draw_x = X + char_x + style_x
+			var draw_y = Y + char_y + style_y
+			var angle = cursor.style.mod_angle
+			draw_set_font(cursor.style.font)
+			draw_set_color(cursor.style.s_color)
+			draw_set_alpha(cursor.style.alpha)
+			draw_text_transformed(draw_x, draw_y, cursor.content, scale_x, scale_y, angle)
+			cursor = cursor.next
+		}
+		draw_set_color(c_fuchsia)
+		draw_rectangle(X, Y, X + max_width, Y + 480, true)
+	}
+}
+
+function tds_draw(tds, X, Y) {
+	tds_update(tds)
+	tds_draw_no_update(tds, X, Y)
 }
 
 function __tds_get_commands_at(start_i) {
