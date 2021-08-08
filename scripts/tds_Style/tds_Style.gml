@@ -9,6 +9,19 @@ function __tds_Style() constructor {
 	mod_angle = 0
 }
 
+function __tds_get_undefined_style() {
+	var result = new __tds_Style()
+	result.font = undefined
+	result.s_color = undefined
+	result.alpha= undefined
+	result.scale_x = undefined
+	result.scale_y = undefined
+	result.mod_x = undefined
+	result.mod_y = undefined
+	result.mod_angle = undefined
+	return result
+}
+
 function __tds_get_style(original_style, commands) {
 	var result = __tds_style_copy(original_style)
 	for (var i = 0; i < array_length(commands); i++) {
