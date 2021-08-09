@@ -1,7 +1,7 @@
-function __tds_get_animations(commands) {
+function __tds_get_animations(commands, char_index) {
 	var result = []
 	for (var i = 0; i < array_length(commands); i++) {
-		var animation = __tds_animation(commands[@ i].command, commands[@ i].aargs)
+		var animation = __tds_get_animation(commands[@ i].command, commands[@ i].aargs, char_index)
 		if (animation != undefined) {
 			array_push(result, animation)
 		}
@@ -19,7 +19,7 @@ function __tds_animations_copy(animations) {
 	var result = []
 	for (var i = 0; i < array_length(animations); i++) {
 		var a = animations[@ i]
-		array_push(result, __tds_animation(a.command, a.params))
+		array_push(result, __tds_get_animation(a.command, a.params, a.character_index))
 	}
 	return result
 }
@@ -45,14 +45,25 @@ function __tds_animation_hash(animations) {
 	return result
 }
 
-function __tds_animation(command, aargs) {
+function __tds_get_animation(command, aargs, char_index) {
 	if (command == "fade") {
-		return new __tds_animation_Fade(aargs)
+		return new __tds_animation_Fade(aargs, char_index)
 	}
 	if (command == "wshake") {
-		return new __tds_animation_WShake(aargs)
+		return new __tds_animation_WShake(aargs, char_index)
+	}
+	if (command == "shake") {
+		return new __tds_animation_Shake(aargs, char_index)
 	}
 	return undefined
+}
+
+function __tds_Animation(name, aargs, char_index) constructor {
+	style = __tds_get_undefined_style()
+	command = name
+	params = aargs
+	character_index = char_index
+	mergeable = true
 }
 
 global.tds_animation_default_fade_alpha_min = 0.3
@@ -65,10 +76,7 @@ function tds_animation_default_fade(alpha_min, alpha_max, cycle_time) {
 	global.tds_animation_default_fade_cycle_time = cycle_time
 }
 
-function __tds_animation_Fade(aargs) constructor {
-	style = __tds_get_undefined_style()
-	command = "fade"
-	params = aargs
+function __tds_animation_Fade(aargs, char_index) : __tds_Animation("fade", aargs, char_index) constructor {
 	alpha_min = global.tds_animation_default_fade_alpha_min
 	alpha_max = global.tds_animation_default_fade_alpha_max
 	cycle_time = global.tds_animation_default_fade_cycle_time
@@ -99,10 +107,7 @@ function __tds_animation_default_wshake(time, magnitude) {
 	global.tds_animation_default_wshake_magnitude = magnitude
 }
 
-function __tds_animation_WShake(aargs) constructor {
-	style = __tds_get_undefined_style()
-	command = "wshake"
-	params = aargs
+function __tds_animation_WShake(aargs, char_index) : __tds_Animation("wshake", aargs, char_index) constructor {
 	shake_time = global.tds_animation_default_wshake_time
 	shake_magnitude = global.tds_animation_default_wshake_magnitude
 	if (array_length(aargs) == 2) {
@@ -112,7 +117,33 @@ function __tds_animation_WShake(aargs) constructor {
 		show_error("TDS Error: Improper number of args for wshake animation!", true)
 	}
 	update = function(time_ms) {
-		var index_x = floor (time_ms / shake_time)
+		var index_x = floor(time_ms / shake_time)
+		var index_y= index_x + 54321
+		style.mod_x = floor(shake_magnitude * 2 * __tds_random(index_x)) - shake_magnitude
+		style.mod_y = floor(shake_magnitude * 2 * __tds_random(index_y)) - shake_magnitude
+	}
+}
+
+global.tds_animation_default_shake_time = 80
+global.tds_animation_default_shake_magnitude = 1
+
+function __tds_animation_default_shake(time, magnitude) {
+	global.tds_animation_default_shake_time = time
+	global.tds_animation_default_shake_magnitude = magnitude
+}
+
+function __tds_animation_Shake(aargs, char_index) : __tds_Animation("shake", aargs, char_index) constructor {
+	mergeable = false
+	shake_time = global.tds_animation_default_shake_time
+	shake_magnitude = global.tds_animation_default_shake_magnitude
+	if (array_length(aargs) == 2) {
+		shake_time = aargs[@ 0]
+		shake_magnitude = aargs[@ 1]
+	} else if (array_length(aargs) != 0) {
+		show_error("TDS Error: Improper number of args for shake animation!", true)
+	}
+	update = function(time_ms) {
+		var index_x = floor(time_ms / shake_time) + character_index * 1000
 		var index_y= index_x + 54321
 		style.mod_x = floor(shake_magnitude * 2 * __tds_random(index_x)) - shake_magnitude
 		style.mod_y = floor(shake_magnitude * 2 * __tds_random(index_y)) - shake_magnitude

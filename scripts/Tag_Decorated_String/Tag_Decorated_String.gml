@@ -41,7 +41,7 @@ function tds_set_text(tds, new_source_string) {
 				i = string_pos_ext(">", source, i)
 			} else {
 				style = __tds_get_style(default_style, commands)
-				animations = __tds_get_animations(commands)
+				animations = __tds_get_animations(commands, i)
 				var c = new __tds_Character(char, style, animations, line_index)
 				array_push(characters, c)
 				line_width += c.char_width
@@ -108,6 +108,13 @@ function __tds_Drawable(char_index, character) constructor {
 	style = __tds_style_copy(character.style)
 	animations = __tds_animations_copy(character.animations)
 	anim_hash = __tds_animation_hash(animations)
+	mergeable = true
+	for (var i = 0; i < array_length(animations); i++) {
+		if (!animations[@ i].mergeable) {
+			mergeable = false
+			i = array_length(animations)
+		}
+	}
 	update = function() {
 	
 	}
@@ -151,6 +158,9 @@ function __tds_drawable_merge_bothsides(drawable) {
 
 function __tds_drawable_merge(a, b) {
 	if (a == undefined || b == undefined) {
+		return false
+	}
+	if (!a.mergeable || !b.mergeable) {
 		return false
 	}
 	if (a.anim_hash != b.anim_hash) {
