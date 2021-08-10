@@ -64,6 +64,9 @@ function __tds_get_animation(command, aargs, char_index) {
 	if (command == "wave") {
 		return new __tds_animation_Wave(aargs, char_index)
 	}
+	if (command == "float") {
+		return new __tds_animation_Float(aargs, char_index)
+	}
 	return undefined
 }
 
@@ -244,5 +247,29 @@ function __tds_animation_Wave(aargs, char_index) : __tds_Animation("wave", aargs
 		time_ms %= cycle_time
 		var percent = time_ms / cycle_time
 		style.mod_y = sin(percent * -2 * pi + char_offset * character_index) * magnitude
+	}
+}
+
+global.tds_animation_default_float_cycle_time = 1000
+global.tds_animation_default_float_magnitude = 3
+
+function tds_animation_default_float(cycle_time, magnitude) {
+	global.tds_animation_default_float_cycle_time = cycle_time
+	global.tds_animation_default_float_magnitude = magnitude
+}
+
+function __tds_animation_Float(aargs, char_index) : __tds_Animation("float", aargs, char_index) constructor {
+	cycle_time = global.tds_animation_default_float_cycle_time
+	magnitude = global.tds_animation_default_float_magnitude
+	if (array_length(aargs) == 2) {
+		change_ms = aargs[@ 0]
+		magnitude = aargs[@ 1]
+	} else if (array_length(aargs) != 0) {
+		show_error("TDS Error: Improper number of args for float animation!", true)
+	}
+	update = function(time_ms) {
+		time_ms %= cycle_time
+		var percent = time_ms / cycle_time
+		style.mod_y = sin(percent * 2 * pi + 0.5 * pi) * magnitude
 	}
 }
