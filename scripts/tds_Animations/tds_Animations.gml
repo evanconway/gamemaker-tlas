@@ -278,13 +278,27 @@ function __tds_animation_Float(aargs, char_index) : __tds_Animation("float", aar
 	}
 }
 
+global.tds_animation_default_wobble_cycle_time = 1000
+global.tds_animation_default_wobble_max_angle = 10
+
+function tds_animation_default_wobble(cycle_time, max_angle) {
+	global.tds_animation_default_wobble_cycle_time = cycle_time
+	global.tds_animation_default_wobble_max_angle = max_angle
+}
+
 function __tds_animation_Wobble(aargs, char_index) : __tds_Animation("wobble", aargs, char_index) constructor {
-	cycle_time = 1000
-	max_angle = 10
+	cycle_time = global.tds_animation_default_wobble_cycle_time
+	max_angle = global.tds_animation_default_wobble_max_angle
+	if (array_length(aargs) == 2) {
+		cycle_time = aargs[@ 0]
+		max_angle = aargs[@ 1]
+	} else if (array_length(aargs) != 0) {
+		show_error("TDS Error: Improper number of args for wobble animation!", true)
+	}
 	update = function(time_ms) {
 		time_ms %= cycle_time
 		var percent = time_ms / cycle_time
-		style.mod_angle = sin(percent * 2 * pi) * max_angle
+		style.mod_angle = sin(percent * 2 * pi + -0.5) * max_angle
 		var vec_x = content_width / -2
 		var vec_y = content_height / -2
 		var hypotenuse = point_distance(0, 0, vec_x, vec_y)
