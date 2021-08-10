@@ -160,7 +160,7 @@ function __tds_animation_Tremble(aargs, char_index) : __tds_Animation("tremble",
 		show_error("TDS Error: Improper number of args for tremble animation!", true)
 	}
 	update = function(time_ms) {
-		var index_x = floor(time_ms / shake_time) + character_index * 1000
+		var index_x = floor(time_ms / shake_time)
 		var index_y= index_x + 4321
 		style.mod_x = floor(shake_magnitude * 2 * __tds_random(index_x)) - shake_magnitude
 		style.mod_y = floor(shake_magnitude * 2 * __tds_random(index_y)) - shake_magnitude
@@ -218,7 +218,6 @@ function __tds_animation_WChromatic(aargs, char_index) : __tds_Animation("wchrom
 	}
 	update = function(time_ms) {
 		var index = floor(time_ms/change_ms) * steps_per_change
-		index += character_index
 		var r = __tds_chromatic_red_at(index)
 		var g = __tds_chromatic_green_at(index)
 		var b = __tds_chromatic_blue_at(index)
@@ -293,5 +292,8 @@ function __tds_animation_Wobble(aargs, char_index) : __tds_Animation("wobble", a
 		theta += style.mod_angle
 		style.mod_x = lengthdir_x(hypotenuse, theta) - vec_x
 		style.mod_y = lengthdir_y(hypotenuse, theta) - vec_y
+		if (style.mod_angle != 0 && os_browser == browser_not_a_browser) {
+			style.mod_y -= 2 // magic angle correct number, native only
+		}
 	}
 }
