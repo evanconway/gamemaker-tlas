@@ -9,6 +9,7 @@ function __tds_random(value) {
 }
 
 function __tds_chromatic_red_at(index) {
+	index = abs(index)
 	index %= 1536
 	if (index >= 0 && index < 256) {
 		return 255
@@ -31,6 +32,7 @@ function __tds_chromatic_red_at(index) {
 }
 
 function __tds_chromatic_green_at(index) {
+	index = abs(index)
 	index %= 1536
 	if (index >= 0 && index < 256) {
 		return index
@@ -53,6 +55,7 @@ function __tds_chromatic_green_at(index) {
 }
 
 function __tds_chromatic_blue_at(index) {
+	index = abs(index)
 	index %= 1536
 	if (index >= 0 && index < 256) {
 		return 0

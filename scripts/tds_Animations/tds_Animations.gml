@@ -61,6 +61,9 @@ function __tds_get_animation(command, aargs, char_index) {
 	if (command == "wchromatic") {
 		return new __tds_animation_WChromatic(aargs, char_index)
 	}
+	if (command == "wave") {
+		return new __tds_animation_Wave(aargs, char_index)
+	}
 	return undefined
 }
 
@@ -158,7 +161,7 @@ function __tds_animation_WShake(aargs, char_index) : __tds_Animation("wshake", a
 
 global.tds_animation_default_chromatic_change_ms = 32
 global.tds_animation_default_chromatic_steps_per_change = 10
-global.tds_animation_default_chromatic_char_offset = 30
+global.tds_animation_default_chromatic_char_offset = -30
 
 function tds_animation_default_chromatic(change_ms, steps_per_change, char_offset) {
 	global.tds_animation_default_chromatic_change_ms = change_ms
@@ -199,7 +202,7 @@ function tds_animation_default_wchromatic(change_ms, steps_per_change, char_offs
 function __tds_animation_WChromatic(aargs, char_index) : __tds_Animation("wchromatic", aargs, char_index) constructor {
 	change_ms = global.tds_animation_default_wchromatic_change_ms
 	steps_per_change = global.tds_animation_default_wchromatic_steps_per_change
-	if (array_length(aargs) == 3) {
+	if (array_length(aargs) == 2) {
 		change_ms = aargs[@ 0]
 		steps_per_change = aargs[@ 1]
 	} else if (array_length(aargs) != 0) {
@@ -212,5 +215,34 @@ function __tds_animation_WChromatic(aargs, char_index) : __tds_Animation("wchrom
 		var g = __tds_chromatic_green_at(index)
 		var b = __tds_chromatic_blue_at(index)
 		style.s_color = make_color_rgb(r, g, b)
+	}
+}
+
+global.tds_animation_default_wave_cycle_time = 1000
+global.tds_animation_default_wave_magnitude = 3
+global.tds_animation_default_wave_char_offset = 0.5
+
+function tds_animation_default_wave(cycle_time, magnitude, char_offset) {
+	global.tds_animation_default_wave_cycle_time = cycle_time
+	global.tds_animation_default_wave_magnitude = magnitude
+	global.tds_animation_default_wave_char_offset = char_offset
+}
+
+function __tds_animation_Wave(aargs, char_index) : __tds_Animation("wave", aargs, char_index) constructor {
+	mergeable = false
+	cycle_time = global.tds_animation_default_wave_cycle_time
+	magnitude = global.tds_animation_default_wave_magnitude
+	char_offset = global.tds_animation_default_wave_char_offset
+	if (array_length(aargs) == 3) {
+		change_ms = aargs[@ 0]
+		magnitude = aargs[@ 1]
+		char_offset = aargs[@ 2]
+	} else if (array_length(aargs) != 0) {
+		show_error("TDS Error: Improper number of args for wave animation!", true)
+	}
+	update = function(time_ms) {
+		time_ms %= cycle_time
+		var percent = time_ms / cycle_time
+		style.mod_y = sin(percent * -2 * pi + char_offset * character_index) * magnitude
 	}
 }
