@@ -52,8 +52,8 @@ function __tds_get_animation(command, aargs, char_index) {
 	if (command == "shake") {
 		return new __tds_animation_Shake(aargs, char_index)
 	}
-	if (command == "wshake") {
-		return new __tds_animation_WShake(aargs, char_index)
+	if (command == "tremble") {
+		return new __tds_animation_Tremble(aargs, char_index)
 	}
 	if (command == "chromatic") {
 		return new __tds_animation_Chromatic(aargs, char_index)
@@ -134,22 +134,22 @@ function __tds_animation_Shake(aargs, char_index) : __tds_Animation("shake", aar
 	}
 }
 
-global.tds_animation_default_wshake_time = 80
-global.tds_animation_default_wshake_magnitude = 2
+global.tds_animation_default_tremble_time = 80
+global.tds_animation_default_tremble_magnitude = 2
 
-function tds_animation_default_wshake(time, magnitude) {
-	global.tds_animation_default_wshake_time = time
-	global.tds_animation_default_wshake_magnitude = magnitude
+function tds_animation_default_tremble(time, magnitude) {
+	global.tds_animation_default_tremble_time = time
+	global.tds_animation_default_tremble_magnitude = magnitude
 }
 
-function __tds_animation_WShake(aargs, char_index) : __tds_Animation("wshake", aargs, char_index) constructor {
-	shake_time = global.tds_animation_default_wshake_time
-	shake_magnitude = global.tds_animation_default_wshake_magnitude
+function __tds_animation_Tremble(aargs, char_index) : __tds_Animation("tremble", aargs, char_index) constructor {
+	shake_time = global.tds_animation_default_tremble_time
+	shake_magnitude = global.tds_animation_default_tremble_magnitude
 	if (array_length(aargs) == 2) {
 		shake_time = aargs[@ 0]
 		shake_magnitude = aargs[@ 1]
 	} else if (array_length(aargs) != 0) {
-		show_error("TDS Error: Improper number of args for wshake animation!", true)
+		show_error("TDS Error: Improper number of args for tremble animation!", true)
 	}
 	update = function(time_ms) {
 		var index_x = floor(time_ms / shake_time) + character_index * 1000
