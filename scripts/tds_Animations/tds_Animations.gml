@@ -55,6 +55,12 @@ function __tds_get_animation(command, aargs, char_index) {
 	if (command == "wshake") {
 		return new __tds_animation_WShake(aargs, char_index)
 	}
+	if (command == "chromatic") {
+		return new __tds_animation_Chromatic(aargs, char_index)
+	}
+	if (command == "wchromatic") {
+		return new __tds_animation_WChromatic(aargs, char_index)
+	}
 	return undefined
 }
 
@@ -102,7 +108,7 @@ function __tds_animation_Fade(aargs, char_index) : __tds_Animation("fade", aargs
 global.tds_animation_default_shake_time = 80
 global.tds_animation_default_shake_magnitude = 1
 
-function __tds_animation_default_shake(time, magnitude) {
+function tds_animation_default_shake(time, magnitude) {
 	global.tds_animation_default_shake_time = time
 	global.tds_animation_default_shake_magnitude = magnitude
 }
@@ -128,7 +134,7 @@ function __tds_animation_Shake(aargs, char_index) : __tds_Animation("shake", aar
 global.tds_animation_default_wshake_time = 80
 global.tds_animation_default_wshake_magnitude = 2
 
-function __tds_animation_default_wshake(time, magnitude) {
+function tds_animation_default_wshake(time, magnitude) {
 	global.tds_animation_default_wshake_time = time
 	global.tds_animation_default_wshake_magnitude = magnitude
 }
@@ -147,5 +153,64 @@ function __tds_animation_WShake(aargs, char_index) : __tds_Animation("wshake", a
 		var index_y= index_x + 4321
 		style.mod_x = floor(shake_magnitude * 2 * __tds_random(index_x)) - shake_magnitude
 		style.mod_y = floor(shake_magnitude * 2 * __tds_random(index_y)) - shake_magnitude
+	}
+}
+
+global.tds_animation_default_chromatic_change_ms = 32
+global.tds_animation_default_chromatic_steps_per_change = 10
+global.tds_animation_default_chromatic_char_offset = 30
+
+function tds_animation_default_chromatic(change_ms, steps_per_change, char_offset) {
+	global.tds_animation_default_chromatic_change_ms = change_ms
+	global.tds_animation_default_chromatic_steps_per_change = steps_per_change
+	global.tds_animation_default_chromatic_char_offset = char_offset
+}
+
+function __tds_animation_Chromatic(aargs, char_index) : __tds_Animation("chromatic", aargs, char_index) constructor {
+	mergeable = false
+	change_ms = global.tds_animation_default_chromatic_change_ms
+	steps_per_change = global.tds_animation_default_chromatic_steps_per_change
+	char_offset = global.tds_animation_default_chromatic_char_offset
+	if (array_length(aargs) == 3) {
+		change_ms = aargs[@ 0]
+		steps_per_change = aargs[@ 1]
+		char_offset = aargs[@ 2]
+	} else if (array_length(aargs) != 0) {
+		show_error("TDS Error: Improper number of args for chromatic animation!", true)
+	}
+	update = function(time_ms) {
+		var index = floor(time_ms/change_ms) * steps_per_change
+		index += char_offset * character_index
+		var r = __tds_chromatic_red_at(index)
+		var g = __tds_chromatic_green_at(index)
+		var b = __tds_chromatic_blue_at(index)
+		style.s_color = make_color_rgb(r, g, b)
+	}
+}
+
+global.tds_animation_default_wchromatic_change_ms = 32
+global.tds_animation_default_wchromatic_steps_per_change = 10
+
+function tds_animation_default_wchromatic(change_ms, steps_per_change, char_offset) {
+	global.tds_animation_default_wchromatic_change_ms = change_ms
+	global.tds_animation_default_wchromatic_steps_per_change = steps_per_change
+}
+
+function __tds_animation_WChromatic(aargs, char_index) : __tds_Animation("wchromatic", aargs, char_index) constructor {
+	change_ms = global.tds_animation_default_wchromatic_change_ms
+	steps_per_change = global.tds_animation_default_wchromatic_steps_per_change
+	if (array_length(aargs) == 3) {
+		change_ms = aargs[@ 0]
+		steps_per_change = aargs[@ 1]
+	} else if (array_length(aargs) != 0) {
+		show_error("TDS Error: Improper number of args for wchromatic animation!", true)
+	}
+	update = function(time_ms) {
+		var index = floor(time_ms/change_ms) * steps_per_change
+		index += character_index
+		var r = __tds_chromatic_red_at(index)
+		var g = __tds_chromatic_green_at(index)
+		var b = __tds_chromatic_blue_at(index)
+		style.s_color = make_color_rgb(r, g, b)
 	}
 }
