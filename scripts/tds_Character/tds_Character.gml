@@ -9,4 +9,11 @@ function __tds_Character(new_character, new_style, new_animations, new_line_inde
 	char_height = string_height(character) * style.scale_y
 	line_index = new_line_index
 	animations = new_animations
+	sprite = undefined
+}
+
+function __tds_character_set_sprite(character, sprite) {
+	character.sprite = sprite
+	character.char_width = sprite_get_width(sprite) * character.style.scale_x
+	character.char_height = sprite_get_height(sprite) * character.style.scale_y
 }

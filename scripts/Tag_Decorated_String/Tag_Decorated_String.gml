@@ -26,6 +26,22 @@ function tds_start_entry_at(tds, character_index) {
 	}
 }
 
+function __tds_get_sprite(commands, index) {
+	for (var i = 0; i < array_length(commands); i++) {
+		var aargs = commands[@ i].aargs
+		if (commands[@ i].command == "sprite") {
+			if (array_length(aargs) == 1) {
+				if (asset_get_type(aargs[@ 0]) == asset_sprite) {
+					return asset_get_index(aargs[@ 0])
+				}
+			} else {
+				show_error("TDS Error: Improper number of args for sprite!", true)
+			}
+		}
+	}
+	return undefined
+}
+
 function tds_set_text(tds, new_source_string) {
 	with (tds) {
 		source = new_source_string
@@ -33,11 +49,25 @@ function tds_set_text(tds, new_source_string) {
 		var line_index = 0
 		var commands = []
 		var style = default_style
-		var animations = undefined // could be array
+		var animations = undefined
+		var sprite = undefined
 		for (var i = 1; i <= string_length(source); i++) {
 			var char = string_char_at(source, i)
 			if (char == "<") {
 				commands = __tds_get_commands_at(i)
+				sprite = __tds_get_sprite(commands, i)
+				if (sprite != undefined) {
+					style = __tds_get_style(default_style, commands)
+					animations = __tds_get_animations(commands, i)
+					var s = new __tds_Character("$", style, animations, line_index)
+					__tds_character_set_sprite(s, sprite)
+					array_push(characters, s)
+					line_width += s.char_width
+					if (char != " " && line_width > max_width) {
+						line_index++
+						line_width = __tds_start_new_line(line_index)
+					}
+				}
 				i = string_pos_ext(">", source, i)
 			} else {
 				style = __tds_get_style(default_style, commands)
@@ -109,6 +139,11 @@ function __tds_Drawable(char_index, character) constructor {
 	animations = __tds_animations_copy(character.animations)
 	anim_hash = __tds_animation_hash(animations)
 	mergeable = true
+	sprite = undefined
+	if (character.sprite != undefined) {
+		mergeable = false
+		sprite = character.sprite
+	}
 	content_width = character.char_width
 	content_height = character.char_height
 	for (var i = 0; i < array_length(animations); i++) {
@@ -296,10 +331,14 @@ function tds_draw_no_update(tds, X, Y) {
 			var draw_x = X + char_x + style_x
 			var draw_y = Y + char_y + style_y
 			var angle = cursor.style.mod_angle
-			draw_set_font(cursor.style.font)
-			draw_set_color(cursor.style.s_color)
-			draw_set_alpha(cursor.style.alpha)
-			draw_text_transformed(draw_x, draw_y, cursor.content, scale_x, scale_y, angle)
+			if (cursor.sprite == undefined) {
+				draw_set_font(cursor.style.font)
+				draw_set_color(cursor.style.s_color)
+				draw_set_alpha(cursor.style.alpha)
+				draw_text_transformed(draw_x, draw_y, cursor.content, scale_x, scale_y, angle)
+			} else {
+				draw_sprite_ext(cursor.sprite, 0, draw_x, draw_y, scale_x, scale_y, angle, cursor.style.s_color, cursor.style.alpha)
+			}
 			cursor = cursor.next
 		}
 		draw_set_color(c_fuchsia)
