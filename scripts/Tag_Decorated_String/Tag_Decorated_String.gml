@@ -109,14 +109,15 @@ function __tds_Drawable(char_index, character) constructor {
 	animations = __tds_animations_copy(character.animations)
 	anim_hash = __tds_animation_hash(animations)
 	mergeable = true
+	content_width = character.char_width
+	content_height = character.char_height
 	for (var i = 0; i < array_length(animations); i++) {
+		animations[@ i].content_width = content_width
+		animations[@ i].content_height = content_height
 		if (!animations[@ i].mergeable) {
 			mergeable = false
 			i = array_length(animations)
 		}
-	}
-	update = function() {
-	
 	}
 }
 
@@ -156,6 +157,13 @@ function __tds_drawable_merge_bothsides(drawable) {
 	}
 }
 
+function __tds_drawable_calc_animation_dimensions(drawable) {
+	for (var i = 0; i < array_length(drawable.animations); i++) {
+		drawable.animations[@ i].content_width = drawable.content_width
+		drawable.animations[@ i].content_height = drawable.content_height
+	}
+}
+
 function __tds_drawable_merge(a, b) {
 	if (a == undefined || b == undefined) {
 		return false
@@ -176,6 +184,11 @@ function __tds_drawable_merge(a, b) {
 		return false
 	}
 	a.content += b.content
+	a.content_width += b.content_width
+	if (b.content_height > a.content_height) {
+		a.content_height = b.content_height
+	}
+	__tds_drawable_calc_animation_dimensions(a)
 	a.i_end += (b.i_end - b.i_start + 1)
 	a.next = b.next
 	return true
@@ -269,6 +282,8 @@ function tds_update(tds) {
 }
 
 function tds_draw_no_update(tds, X, Y) {
+	draw_set_halign(fa_left)
+	draw_set_valign(fa_top)
 	with (tds) {
 		var cursor = drawables
 		while (cursor != undefined) {

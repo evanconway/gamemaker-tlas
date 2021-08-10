@@ -67,6 +67,9 @@ function __tds_get_animation(command, aargs, char_index) {
 	if (command == "float") {
 		return new __tds_animation_Float(aargs, char_index)
 	}
+	if (command == "wobble") {
+		return new __tds_animation_Wobble(aargs, char_index)
+	}
 	return undefined
 }
 
@@ -76,6 +79,8 @@ function __tds_Animation(name, aargs, char_index) constructor {
 	params = aargs
 	character_index = char_index
 	mergeable = true
+	content_width = 0
+	content_height = 0
 }
 
 global.tds_animation_default_fade_alpha_min = 0.3
@@ -271,5 +276,22 @@ function __tds_animation_Float(aargs, char_index) : __tds_Animation("float", aar
 		time_ms %= cycle_time
 		var percent = time_ms / cycle_time
 		style.mod_y = sin(percent * 2 * pi + 0.5 * pi) * magnitude
+	}
+}
+
+function __tds_animation_Wobble(aargs, char_index) : __tds_Animation("wobble", aargs, char_index) constructor {
+	cycle_time = 1000
+	max_angle = 10
+	update = function(time_ms) {
+		time_ms %= cycle_time
+		var percent = time_ms / cycle_time
+		style.mod_angle = sin(percent * 2 * pi) * max_angle
+		var vec_x = content_width / -2
+		var vec_y = content_height / -2
+		var hypotenuse = point_distance(0, 0, vec_x, vec_y)
+		var theta = point_direction(0, 0, vec_x, vec_y)
+		theta += style.mod_angle
+		style.mod_x = lengthdir_x(hypotenuse, theta) - vec_x
+		style.mod_y = lengthdir_y(hypotenuse, theta) - vec_y
 	}
 }
