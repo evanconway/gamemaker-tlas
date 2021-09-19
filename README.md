@@ -25,7 +25,7 @@ Finally, in a draw event, use the draw function to display your TDS:
 
 # Tags
 
-Tag Decorated Strings, as the name suggests, can be decorated/styled/animated with html style tags. The format for tags is always <command:var1,var2,var3,...>. All styles/animations for a TDS are reset with an empty tag <>
+Tag Decorated Strings, as the name suggests, can be decorated/styled/animated with html style tags. The format for tags is always `<command:var1,var2,var3,...>`. All styles/animations for a TDS are reset with an empty tag `<>`
 
 ## color
 `<color>`
