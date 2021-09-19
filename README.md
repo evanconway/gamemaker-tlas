@@ -1,5 +1,5 @@
 # Tag Decorated Strings
-A an easy, fast way to make animated text in GameMaker Studio 2. Compatible with all Windows VM, YYC, and HTML5!
+A an easy, fast way to make animated text in GameMaker Studio 2. Compatible with Windows VM, Windows YYC, and HTML5!
 
 This library is a rewrite of another project: https://github.com/AceOfHeart5/Text_Boxes. This new library aims to achieve the same functionality, but with cleaner code, Better performance, clearer features, and an all around better interface.
 
