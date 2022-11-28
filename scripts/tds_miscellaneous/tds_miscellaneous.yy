@@ -6,7 +6,7 @@
     "path": "folders/Tag Decorated String.yy",
   },
   "resourceVersion": "1.0",
-  "name": "tds_effects",
+  "name": "tds_miscellaneous",
   "tags": [],
   "resourceType": "GMScript",
 }
